@@ -1,388 +1,81 @@
-
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#000">
-<title>Bảng chấm công và tính lương</title>
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#000"><title>Bảng lương và chấm công</title>
 <style>
-*{box-sizing:border-box}
-:root{color-scheme:dark}
-body{margin:0;background:#000;color:#f5f5f5;font-family:Arial,sans-serif}
-header{position:sticky;top:0;background:#080808;z-index:5;padding:12px;border-bottom:1px solid #333}
-h1{font-size:19px;text-align:center}
-nav{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
-nav a{color:white;text-decoration:none;border:1px solid #555;border-radius:6px;padding:8px;font-size:13px}
-main{max-width:1000px;margin:auto;padding:12px}
-.panel{background:#090909;border:1px solid #333;border-radius:10px;padding:12px;margin-bottom:16px;scroll-margin-top:120px}
-h2{font-size:20px}
-h3{font-size:15px;color:#ccc}
-.row{display:grid;grid-template-columns:1fr 40%;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #292929}
-.code{font-size:11px;color:#888;margin-top:3px}
-input,select,button{font:inherit}
-input[type=number],select,input[type=text]{width:100%;min-width:0;background:#151515;color:white;border:1px solid #555;border-radius:5px;padding:9px}
-button{background:#222;color:white;border:1px solid #666;border-radius:6px;padding:10px;margin:4px 3px 4px 0}
-.primary{background:#eee;color:#111;font-weight:bold}
-.note,.message{font-size:12px;color:#bbb;line-height:1.5}
-.controls,.summary{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
-.field{min-width:90px;flex:1}
-.field label{display:block;font-size:12px;color:#bbb;margin-bottom:5px}
-.pill{border:1px solid #444;padding:8px;border-radius:6px;font-size:12px}
-.table-wrap{overflow-x:auto;border:1px solid #444;border-radius:6px;margin:10px 0}
-table{border-collapse:collapse;width:100%;font-size:12px}
-th,td{border:1px solid #444;padding:6px;text-align:center;white-space:nowrap}
-th{background:#222}
-td select,td input{min-width:90px;padding:7px;font-size:12px}
-td input[type=checkbox]{min-width:20px;width:20px;height:20px}
-.ot-table{font-size:15px}
-.ot-table td{padding:9px 5px}
-.money{text-align:right;white-space:nowrap}
-.time-pick{min-width:105px}
-.time-pick input{margin-top:4px}
-@media(min-width:650px){main{padding:20px}.row{grid-template-columns:1fr 230px}.panel{padding:18px}}
-</style>
-</head>
-<body>
-<header>
-<h1>BẢNG CHẤM CÔNG & TÍNH LƯƠNG</h1>
-<nav>
-<a href="#muc1">1. Bậc lương</a>
-<a href="#muc2">2. Chấm công</a>
-<a href="#muc3">3. Tăng ca</a>
-</nav>
-</header>
-
+*{box-sizing:border-box} :root{color-scheme:dark;--bg:#000;--panel:#111;--line:#363636;--muted:#aaa;--text:#f5f5f5;--accent:#dceaff} html{scroll-behavior:smooth} body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif} header{position:sticky;top:0;z-index:5;background:#080808f2;border-bottom:1px solid #292929;padding:12px 10px} header h1{font-size:19px;margin:0 0 10px;text-align:center;font-weight:600} nav{display:flex;gap:7px;justify-content:center;flex-wrap:wrap} nav a{color:#fff;text-decoration:none;border:1px solid #444;border-radius:7px;padding:8px 11px;font-size:13px} main{max-width:1000px;margin:auto;padding:16px 12px 40px} section.panel{border:1px solid #333;border-radius:12px;padding:15px;margin:0 0 18px;background:#080808;scroll-margin-top:125px} h2{font-size:20px;font-weight:600;margin:0 0 14px} h3{font-size:14px;color:#bbb;font-weight:500;margin:14px 0 8px}.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,38%);align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #242424}.name{font-size:14px;overflow-wrap:anywhere}.code{font-size:11px;color:#888;margin-top:3px}.amount,input,select,button{font:inherit}.amount,input[type=number],input[type=time],select{width:100%;min-width:0;min-height:38px;background:#111;color:#fff;border:1px solid #454545;border-radius:5px;padding:7px 8px}.amount{text-align:right;font-variant-numeric:tabular-nums}.buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button{background:#1c1c1c;color:#fff;border:1px solid #555;border-radius:7px;padding:9px 12px;min-height:38px}button.primary{background:#e5e5e5;color:#111;font-weight:600}.message,.note{font-size:12px;color:#aaa;line-height:1.5;margin:10px 0 0;min-height:16px}.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:end}.field{display:flex;flex-direction:column;gap:5px;min-width:90px}.field label{font-size:12px;color:#aaa}.summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.pill{border:1px solid #333;background:#151515;padding:8px 10px;border-radius:7px;font-size:12px}.table-wrap{overflow-x:auto;border:1px solid #444;border-radius:7px;overscroll-behavior-x:contain}table{border-collapse:collapse;width:100%;font-size:13px}th,td{border:1px solid #555;padding:7px 6px;text-align:center;white-space:nowrap}th{background:#1d1d1d}td{background:#050505}td input,td select{min-width:86px;padding:6px;font-size:12px}td.day{font-weight:600;min-width:58px}td input[type=checkbox]{width:20px;height:20px;min-width:20px;accent-color:#fff}.ot-layout{max-width:620px;margin:auto}.ot-section{margin:16px 0 30px}.ot-section h3{font-size:22px;color:white;margin:0 0 4px}.ot-table{table-layout:auto;width:100%;font-size:18px}.ot-table td{height:43px;padding:5px}.ot-table td.rate{width:76px}.ot-table td.hours{width:75px}.ot-table td.money{width:1%;text-align:right;white-space:nowrap}.ot-table td.total{width:105px;font-size:20px}.ot-table input{background:transparent;border:0;color:white;text-align:center;font-size:20px;padding:0;min-width:0;width:100%;outline:none}.rate-box{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:13px;color:#ccc}.rate-box input{max-width:140px}@media(min-width:650px){main{padding:22px 20px}.row{grid-template-columns:minmax(0,1fr) 230px}.ot-table{font-size:24px}.ot-table td.rate{width:95px}.ot-table td.hours{width:85px}.ot-table td.money{width:170px}.ot-table td.total{width:145px}}@media(max-width:420px){header h1{font-size:17px}nav a{padding:7px 8px;font-size:12px}section.panel{padding:11px}.ot-table{font-size:18px}.ot-table td{padding:5px 3px}.ot-table td.rate{width:65px}.ot-table td.hours{width:62px}.ot-table td.money{width:104px;font-size:15px}.ot-table td.total{width:82px;font-size:17px}.ot-table input{font-size:18px}}
+ .time-pick{display:flex;flex-direction:column;gap:4px;min-width:92px}.time-pick select,.time-pick input{width:100%;min-width:88px;box-sizing:border-box}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px}.collapse-btn{font-size:12px;padding:5px 9px;min-height:30px;white-space:nowrap}
+</style></head><body>
+<header><h1>BẢNG CHẤM CÔNG & TÍNH LƯƠNG</h1><nav><a href="#muc1">1. Bậc lương</a><a href="#muc2">2. Chấm công</a><a href="#muc3">3. Tăng ca</a></nav></header>
 <main>
-<section class="panel" id="muc1">
-<h2>1. Bậc lương</h2>
-<div class="row">
-<div>Lương cơ bản<div class="code">LUONG.CB</div></div>
-<input class="salary-field" data-code="LUONG.CB" type="number" min="0" value="5500000">
-</div>
-<h3>PHỤ CẤP</h3>
-<div id="allowances"></div>
-<button class="primary" id="saveSalary">Lưu Mục 1</button>
-<button id="resetSalary">Khôi phục số mẫu</button>
-<p class="message" id="salaryMsg"></p>
-</section>
-
-<section class="panel" id="muc2">
-<h2>2. Bảng chấm công</h2>
-<p class="note">Chọn Đi làm, nhập giờ đến/giờ về và tích OT trưa nếu có. Ca qua đêm được tính đến ngày hôm sau.</p>
-<div class="controls">
-<div class="field"><label>Tháng</label><select id="month"></select></div>
-<div class="field"><label>Năm</label><select id="year"></select></div>
-</div>
-<button class="primary" id="saveAttendance">Lưu bảng chấm công</button>
-<button id="exportAttendance">Xuất CSV</button>
-<div class="summary">
-<div class="pill">Đi làm: <b id="countWork">0</b></div>
-<div class="pill">Nghỉ: <b id="countRest">0</b></div>
-<div class="pill">Nghỉ phép: <b id="countLeave">0</b></div>
-<div class="pill">OT trưa: <b id="countLunch">0</b> ngày</div>
-</div>
-<div class="table-wrap">
-<table>
-<thead><tr><th>Ngày</th><th>Thứ</th><th>Trạng thái</th><th>Giờ đến</th><th>Giờ về</th><th>OT trưa</th></tr></thead>
-<tbody id="attendanceRows"></tbody>
-</table>
-</div>
-<p class="message" id="attendanceMsg"></p>
-<button id="clearAttendance">Xóa dữ liệu tháng này</button>
-</section>
-
-<section class="panel" id="muc3">
-<h2>3. Tiền lương và tăng ca</h2>
-<div class="summary">
-<div class="pill">Ngày đi làm: <b id="payWorkDays">0</b></div>
-<div class="pill">Lương giờ: <b id="payHourRate">0 đ</b></div>
-</div>
-<h3>Lương giờ hành chính</h3>
-<div class="table-wrap"><table class="ot-table"><tbody>
-<tr><td>Giờ hành chính thực tế</td><td id="regularHours">0 giờ</td></tr>
-<tr><td>Tiền lương hành chính</td><td class="money" id="regularPay">0 đ</td></tr>
-</tbody></table></div>
-
-<h3>Chi tiết tăng ca</h3>
-<div class="table-wrap"><table class="ot-table"><thead>
-<tr><th>Khoản</th><th>Giờ</th><th>Hệ số</th><th>Tiền</th></tr>
-</thead><tbody id="otDetails"></tbody></table></div>
-
-<div class="summary"><div class="pill">Tổng tăng ca: <b id="totalOT">0 đ</b></div></div>
-<h2>TỔNG TIỀN TẠM TÍNH</h2>
-<div class="table-wrap"><table><tbody>
-<tr><th>Tổng lương hành chính và tăng ca</th><td class="money" id="grandPay">0 đ</td></tr>
-</tbody></table></div>
-
-<div class="field">
-<label>Lương giờ (tự tính từ bậc lương, có thể chỉnh)</label>
-<input id="hourRate" type="number" min="0" step="1" value="0">
-</div>
-<p class="note">Tăng ca trước 08:00 và từ 17:00 đến 22:00 tính 150%. Sau 22:00 tính 210%. OT trưa tính thêm 0,5 giờ × 150% khi tích chọn. Giờ hành chính chỉ tính thời gian nằm trong khung 08:00–12:00 và 13:00–17:00.</p>
-<p class="message" id="otMsg"></p>
-<button id="saveOT" class="primary">Lưu thiết lập lương giờ</button>
-<button id="resetOT">Tính lại theo giờ chấm công</button>
-</section>
+<section class="panel" id="muc1"><h2 class="section-head">1. Bậc lương <button type="button" class="collapse-btn" data-target="muc1Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc1Body"><div class="row"><div class="name">Lương cơ bản<div class="code">LUONG.CB</div></div><input class="amount salary-field" type="number" min="0" step="1000" data-code="LUONG.CB" value="5500000"></div><h3>PHỤ CẤP</h3><div id="allowances"></div><div class="buttons"><button class="primary" id="saveSalary">Lưu Mục 1</button><button id="resetSalary">Khôi phục số mẫu</button></div><p class="message" id="salaryMsg" aria-live="polite"></p></div></section>
+<section class="panel" id="muc2"><h2 class="section-head">2. Bảng chấm công <button type="button" class="collapse-btn" data-target="muc2Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc2Body"><p class="note">Chọn trạng thái, nhập giờ đến/giờ về và tích OT trưa nếu có. Bảng lưu theo tháng trên trình duyệt thiết bị này.</p><div class="controls"><div class="field"><label for="month">Tháng</label><select id="month"></select></div><div class="field"><label for="year">Năm</label><select id="year"></select></div><button class="primary" id="saveAttendance">Lưu bảng chấm công</button><button id="exportAttendance">Xuất CSV</button></div><div class="summary"><div class="pill">Đi làm: <b id="countWork">0</b></div><div class="pill">Nghỉ: <b id="countRest">0</b></div><div class="pill">Nghỉ phép: <b id="countLeave">0</b></div><div class="pill">OT trưa: <b id="countLunch">0</b> ngày</div></div><div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Thứ</th><th>Trạng thái</th><th>Giờ đến</th><th>Giờ về</th><th>OT trưa ✓</th></tr></thead><tbody id="attendanceRows"></tbody></table></div><p class="message" id="attendanceMsg" aria-live="polite"></p><div class="buttons"><button id="clearAttendance">Xóa dữ liệu tháng này</button></div></div></section>
+<section class="panel" id="muc3"><h2 class="section-head">3. Tiền lương <button type="button" class="collapse-btn" data-target="muc3Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc3Body"><div class="summary"><div class="pill">Ngày đi làm: <b id="payWorkDays">0</b></div><div class="pill">Lương giờ: <b id="payHourRate">0 đ</b></div></div><div class="ot-layout"><div class="ot-section"><h3>Lương giờ hành chính</h3><div class="table-wrap"><table class="ot-table"><tbody><tr><td>Lương giờ × giờ hành chính thực tế</td><td class="money" id="regularPay">0 đ</td></tr></tbody></table></div></div><div class="ot-section"><h3>Lương tăng ca trong</h3><div class="table-wrap"><table class="ot-table"><tbody id="inside"></tbody></table></div><p class="pill">Tổng tăng ca trong: <b id="insideGrand">0 đ</b></p></div><div class="ot-section"><h3>Lương tăng ca ngoài</h3><div class="table-wrap"><table class="ot-table"><tbody id="outside"></tbody></table></div><p class="pill">Tổng tăng ca ngoài: <b id="outsideGrand">0 đ</b></p></div><div class="ot-section"><h3>TỔNG TIỀN TẠM TÍNH</h3><div class="table-wrap"><table class="ot-table"><tbody><tr><td class="money" id="grandPay">0 đ</td></tr></tbody></table></div></div></div><div class="rate-box">Lương giờ (có thể chỉnh): <input id="hourRate" type="number" min="0" step="1" value="0"> đ/giờ</div><p class="note">Giờ làm được tính từ giờ đến–giờ về, trừ 1 giờ nghỉ trưa (nếu tích OT trưa thì không trừ giờ nghỉ). Tối đa 8 giờ/ngày là giờ hành chính; phần vượt quá 8 giờ là tăng ca. Nhập phân bổ giờ tăng ca vào các mức 100%/150%/200%/30% theo quy định công ty; tổng giờ nhập tăng ca không được vượt quá giờ tăng ca suy ra từ giờ về.</p><div class="buttons"><button class="primary" id="saveOT">Lưu số giờ tăng ca</button><button id="resetOT">Khôi phục giờ mẫu</button></div><p class="message" id="otMsg" aria-live="polite"></p></div></section>
 </main>
-
 <script>
-(function(){
-'use strict';
-const $=id=>document.getElementById(id);
-const money=n=>Math.round(Number(n)||0).toLocaleString('vi-VN')+' đ';
-const salaryKey='bangLuongMuc1_only_v2';
-const allowanceData=[
-['T.NIEN','Tiền niên',600000],['CDDB','CĐĐB',1000000],
-['KHAC','Khác',0],['NN','NN',0],['C.CAN','Chuyên cần',460000],
-['XANG XE','Xăng xe',400000],['NHA O','Nhà ở',300000],
-['XRAY','XRay',0],['PC XE NANG','Phụ cấp xe nâng',0],
-['T.NHIEM','Trách nhiệm',0],['THUONG','Thưởng',0],
-['S.LY','S.LY',0],['PCCC','PCCC',0],['THOI VIEC','Thôi việc',0],
-['TT PHEP','TT PHEP',0],['C.NHO','C.NHO',0],['ATVSV/SCC','ATVSV/SCC',0]
-];
-
-const allowanceBox=$('allowances');
-allowanceData.forEach(([code,name,value])=>{
- const row=document.createElement('div');
- row.className='row';
- const label=document.createElement('div');
- label.textContent=name;
- const small=document.createElement('div');
- small.className='code';small.textContent=code;label.appendChild(small);
- const input=document.createElement('input');
- input.type='number';input.min='0';input.step='1000';
- input.className='salary-field';input.dataset.code=code;input.value=value;
- row.append(label,input);allowanceBox.appendChild(row);
-});
-const salaryInputs=[...document.querySelectorAll('.salary-field')];
-const salaryDefaults=salaryInputs.map(i=>({code:i.dataset.code,value:+i.value||0}));
-function salaryData(){return salaryInputs.map(i=>({code:i.dataset.code,value:Math.max(0,+i.value||0)}))}
-function loadSalary(){
- try{
-  const saved=JSON.parse(localStorage.getItem(salaryKey)||'null');
-  if(Array.isArray(saved))salaryInputs.forEach(i=>{
-   const x=saved.find(v=>v.code===i.dataset.code);
-   if(x&&Number.isFinite(+x.value))i.value=Math.max(0,+x.value);
-  });
- }catch(e){}
- updateRate();
-}
-function saveSalary(show=true){
- try{
-  localStorage.setItem(salaryKey,JSON.stringify(salaryData()));
-  $('salaryMsg').textContent=show?'Đã lưu Mục 1 ✓':'Đã khôi phục số mẫu ✓';
- }catch(e){$('salaryMsg').textContent='Không lưu được dữ liệu trên trình duyệt.'}
- updateRate();
-}
-$('saveSalary').onclick=()=>saveSalary(true);
-$('resetSalary').onclick=()=>{
- salaryInputs.forEach(i=>{const x=salaryDefaults.find(v=>v.code===i.dataset.code);i.value=x.value});
- saveSalary(false);
-};
-salaryInputs.forEach(i=>i.addEventListener('input',updateRate));
-
-const month=$('month'),year=$('year'),attendanceRows=$('attendanceRows');
-const now=new Date();
-for(let m=1;m<=12;m++){let o=new Option(String(m).padStart(2,'0'),m);month.add(o)}
-for(let y=now.getFullYear()-2;y<=now.getFullYear()+3;y++)year.add(new Option(y,y));
-month.value=now.getMonth()+1;year.value=now.getFullYear();
-const attKey=()=>`chamCongMuc2_${year.value}_${String(month.value).padStart(2,'0')}`;
-const otKey=()=>`muc3OT_${year.value}_${String(month.value).padStart(2,'0')}`;
-const weekdays=['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
-
-function timeMinutes(value){
- if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(String(value||'')))return null;
- const [h,m]=value.split(':').map(Number);return h*60+m;
-}
-function readAttendance(){
- return [...attendanceRows.querySelectorAll('tr')].map(tr=>{
-  const get=f=>tr.querySelector(`[data-f="${f}"]`);
-  return {
-   day:+tr.dataset.day,
-   status:get('status').value,
-   arrival:get('arrival').value,
-   departure:get('departure').value,
-   lunch:get('lunch').checked
-  };
- });
-}
-function buildAttendance(){
- let saved={};
- try{saved=JSON.parse(localStorage.getItem(attKey())||'{}')}catch(e){}
- const n=new Date(+year.value,+month.value,0).getDate();
- attendanceRows.replaceChildren();
- for(let d=1;d<=n;d++){
-  const old=saved[d]||{};
-  const tr=document.createElement('tr');tr.dataset.day=d;
-  const date=new Date(+year.value,+month.value-1,d);
-  const td1=document.createElement('td');td1.textContent=String(d).padStart(2,'0');tr.appendChild(td1);
-  const td2=document.createElement('td');td2.textContent=weekdays[date.getDay()];tr.appendChild(td2);
-
-  const status=document.createElement('select');status.dataset.f='status';
-  [['','—'],['Đi làm','Đi làm'],['Nghỉ','Nghỉ'],['Nghỉ phép','Nghỉ phép']].forEach(([v,t])=>status.add(new Option(t,v)));
-  status.value=old.status||old.trangThai||'';
-  const arrival=document.createElement('input');arrival.type='time';arrival.dataset.f='arrival';arrival.value=old.arrival||old.gioDen||'08:00';
-  const departure=document.createElement('input');departure.type='time';departure.dataset.f='departure';departure.value=old.departure||old.gioVe||'17:00';
-  const lunch=document.createElement('input');lunch.type='checkbox';lunch.dataset.f='lunch';lunch.checked=old.lunch===true||old.otTrua===true||old.ot===true||old.ot==='1';
-  [[status,'status'],[arrival,'arrival'],[departure,'departure'],[lunch,'lunch']].forEach(([el])=>{
-   const td=document.createElement('td');td.appendChild(el);tr.appendChild(td);
-   el.addEventListener('change',()=>{updateSummary();calcOT()});
-  });
-  attendanceRows.appendChild(tr);
- }
- updateSummary();calcOT();
- $('attendanceMsg').textContent=`Đã tạo ${n} ngày cho tháng ${month.value}/${year.value}.`;
-}
-function updateSummary(){
- const a=readAttendance();
- $('countWork').textContent=a.filter(x=>x.status==='Đi làm').length;
- $('countRest').textContent=a.filter(x=>x.status==='Nghỉ').length;
- $('countLeave').textContent=a.filter(x=>x.status==='Nghỉ phép').length;
- $('countLunch').textContent=a.filter(x=>x.lunch).length;
-}
-function saveAttendance(){
- const data={};
- readAttendance().forEach(r=>data[r.day]={
-  status:r.status,arrival:r.arrival,departure:r.departure,lunch:r.lunch
- });
- try{
-  localStorage.setItem(attKey(),JSON.stringify(data));
-  $('attendanceMsg').textContent='Đã lưu bảng chấm công ✓';
- }catch(e){$('attendanceMsg').textContent='Không lưu được dữ liệu.'}
-}
-$('saveAttendance').onclick=saveAttendance;
-month.onchange=()=>{buildAttendance();loadOT()};
-year.onchange=()=>{buildAttendance();loadOT()};
-$('clearAttendance').onclick=()=>{
- if(confirm('Xóa dữ liệu chấm công của tháng đang chọn?')){
-  localStorage.removeItem(attKey());buildAttendance();
-  $('attendanceMsg').textContent='Đã xóa dữ liệu tháng này.';
- }
-};
-$('exportAttendance').onclick=()=>{
- const data=readAttendance();
- const csv=[['Ngày','Thứ','Trạng thái','Giờ đến','Giờ về','OT trưa'],
- ...data.map(r=>[
-  `${r.day}/${month.value}/${year.value}`,
-  weekdays[new Date(+year.value,+month.value-1,r.day).getDay()],
-  r.status,r.arrival,r.departure,r.lunch?'Có':'Không'
- ])];
- const blob=new Blob(['\ufeff'+csv.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
- const url=URL.createObjectURL(blob);const a=document.createElement('a');
- a.href=url;a.download=`cham-cong-${year.value}-${month.value}.csv`;a.click();
- URL.revokeObjectURL(url);
-};
-
-function updateRate(){
- const values={};salaryData().forEach(x=>values[x.code]=x.value);
- const excluded=['LUONG.CB','C.CAN','THUONG','THOI VIEC','TT PHEP','S.LY'];
- const base=values['LUONG.CB']||0;
- const allowances=Object.keys(values).filter(k=>!excluded.includes(k)).reduce((s,k)=>s+(values[k]||0),0);
- const calculated=Math.round((base+allowances)/208);
- if(!$('hourRate').dataset.manual)$('hourRate').value=calculated;
- calcOT();
-}
-$('hourRate').addEventListener('input',()=>{$('hourRate').dataset.manual='1';calcOT()});
-
-function overlap(start,end,from,to){
- return Math.max(0,Math.min(end,to)-Math.max(start,from));
+(()=>{
+const $=id=>document.getElementById(id);const money=n=>Math.round(Number(n)||0).toLocaleString('vi-VN')+' đ';
+// MỤC 1
+const salaryKey='bangLuongMuc1_only_v2';const allowanceData=[['T.NIEN','Tiền niên',600000],['CDDB','CĐĐB',1000000],['KHAC','Khác',0],['NN','NN',0],['C.CAN','Chuyên cần',460000],['XANG XE','Xăng xe',400000],['NHA O','Nhà ở',300000],['XRAY','XRay',0],['PC XE NANG','Phụ cấp xe nâng',0],['T.NHIEM','Trách nhiệm',0],['THUONG','Thưởng',0],['S.LY','S.LY',0],['PCCC','PCCC',0],['THOI VIEC','Thôi việc',0],['TT PHEP','TT PHEP',0],['C.NHO','C.NHO',0],['ATVSV/SCC','ATVSV/SCC',0]];const allow=$('allowances');allowanceData.forEach(([code,name,value])=>{const r=document.createElement('div');r.className='row';r.innerHTML='<div class="name"></div><input class="amount salary-field" type="number" min="0" step="1000" inputmode="numeric">';r.querySelector('.name').innerHTML=name+'<div class="code"></div>';r.querySelector('.code').textContent=code;const i=r.querySelector('input');i.dataset.code=code;i.value=value;i.setAttribute('aria-label',name);allow.appendChild(r)});const salaryInputs=[...document.querySelectorAll('.salary-field')];const salaryDefaults=salaryInputs.map(i=>({code:i.dataset.code,value:Number(i.value)||0}));function salaryData(){return salaryInputs.map(i=>({code:i.dataset.code,value:Math.max(0,Number(i.value)||0)}))}function loadSalary(){try{const a=JSON.parse(localStorage.getItem(salaryKey)||'null');if(Array.isArray(a))salaryInputs.forEach(i=>{const v=a.find(x=>x&&x.code===i.dataset.code);if(v&&Number.isFinite(Number(v.value)))i.value=Math.max(0,Number(v.value))})}catch(e){} updateRate()}function saveSalary(show=true){try{localStorage.setItem(salaryKey,JSON.stringify(salaryData()));$('salaryMsg').textContent=show?'Đã lưu Mục 1 ✓':'';updateRate()}catch(e){$('salaryMsg').textContent='Không lưu được trong chế độ xem hiện tại.'}}$('saveSalary').onclick=()=>saveSalary(true);$('resetSalary').onclick=()=>{salaryInputs.forEach(i=>{const v=salaryDefaults.find(x=>x.code===i.dataset.code);i.value=v?v.value:0});saveSalary(false);$('salaryMsg').textContent='Đã khôi phục số mẫu ✓'};salaryInputs.forEach(i=>i.addEventListener('change',()=>{$('salaryMsg').textContent='Có thay đổi chưa lưu. Nhấn “Lưu Mục 1”.';updateRate()}));
+// MỤC 2: trạng thái và checkbox OT trưa
+const month=$('month'),year=$('year'),attendanceRows=$('attendanceRows');const now=new Date();for(let m=1;m<=12;m++){const o=document.createElement('option');o.value=m;o.textContent=String(m).padStart(2,'0');month.appendChild(o)}for(let y=now.getFullYear()-2;y<=now.getFullYear()+3;y++){const o=document.createElement('option');o.value=y;o.textContent=y;year.appendChild(o)}month.value=now.getMonth()+1;year.value=now.getFullYear();const attKey=()=>`chamCongMuc2_${year.value}_${String(month.value).padStart(2,'0')}`;const weekdays=['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];function getTimeValue(tr,field){const sel=tr.querySelector(`select[data-f=\"${field}\"]`);return sel.value==='__custom__'?tr.querySelector(`[data-custom=\"${field}\"]`).value:sel.value}function readAttendance(){return [...attendanceRows.querySelectorAll('tr')].map(tr=>({day:+tr.dataset.day,trangThai:tr.querySelector('[data-f=status]').value,gioDen:getTimeValue(tr,'arrival'),gioVe:getTimeValue(tr,'departure'),otTrua:tr.querySelector('[data-f=lunch]').checked}))}function updateAttendanceSummary(){const a=readAttendance();$('countWork').textContent=a.filter(x=>x.trangThai==='Đi làm').length;$('countRest').textContent=a.filter(x=>x.trangThai==='Nghỉ').length;$('countLeave').textContent=a.filter(x=>x.trangThai==='Nghỉ phép').length;$('countLunch').textContent=a.filter(x=>x.otTrua).length;if(typeof calcOT==='function')calcOT()}function buildAttendance(){let saved={};try{saved=JSON.parse(localStorage.getItem(attKey())||'{}')}catch(e){}const n=new Date(+year.value,+month.value,0).getDate();attendanceRows.replaceChildren();for(let d=1;d<=n;d++){const old=saved[d]||{};const date=new Date(+year.value,+month.value-1,d);const tr=document.createElement('tr');tr.dataset.day=d;const vals=[String(d).padStart(2,'0')+'/'+String(month.value).padStart(2,'0'),weekdays[date.getDay()]];vals.forEach((v,i)=>{const td=document.createElement('td');td.textContent=v;if(i===0)td.className='day';tr.appendChild(td)});const st=document.createElement('select');st.dataset.f='status';[['','—'],['Đi làm','Đi làm'],['Nghỉ','Nghỉ'],['Nghỉ phép','Nghỉ phép']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;st.appendChild(o)});st.value=old.trangThai||old.status||({'X':'Đi làm','N':'Nghỉ','P':'Nghỉ phép'}[old.status]||'');function timeSelect(field,current,choices,defaultValue){const wrap=document.createElement('div');wrap.className='time-pick';const sel=document.createElement('select');sel.dataset.f=field;const values=[...choices];if(!values.includes(defaultValue))values.push(defaultValue);values.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});const custom=document.createElement('option');custom.value='__custom__';custom.textContent='Khác';sel.appendChild(custom);const input=document.createElement('input');input.type='text';input.inputMode='text';input.placeholder='Ví dụ 08:15';input.autocomplete='off';input.dataset.custom=field;input.value='';input.style.display='none';
+const isKnown=choices.includes(current);
+if(current && !isKnown){const savedOption=document.createElement('option');savedOption.value=current;savedOption.textContent=current;sel.add(savedOption,sel.options.length-1);sel.value=current;}else{sel.value=current||defaultValue||'__custom__';}
+input.style.display=sel.value==='__custom__'?'block':'none';
+sel.addEventListener('change',()=>{input.style.display=sel.value==='__custom__'?'block':'none';if(sel.value==='__custom__'){input.value='';input.focus()}updateAttendanceSummary()});
+input.addEventListener('change',()=>{const value=input.value.trim();if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)){alert('Vui lòng nhập giờ đúng dạng HH:MM, ví dụ 08:15.');input.focus();return;}let option=[...sel.options].find(o=>o.value===value);if(!option){option=document.createElement('option');option.value=value;option.textContent=value;sel.add(option,sel.options.length-1);}sel.value=value;input.style.display='none';updateAttendanceSummary();});
+wrap.append(sel,input);return wrap}const arrival=timeSelect('arrival',old.gioDen||old.arrival||'08:00',['08:00'],'08:00');const departure=timeSelect('departure',old.gioVe||old.departure||'17:00',['17:00','17:30','18:00','18:30','19:00','19:30'],'17:00');const lunch=document.createElement('input');lunch.type='checkbox';lunch.dataset.f='lunch';lunch.checked=old.otTrua===true||old.otTrua==='true'||old.ot===true||old.ot===1||old.ot==='1';[[st,'Trạng thái'],[arrival,'Giờ đến'],[departure,'Giờ về'],[lunch,'OT trưa']].forEach(([el,label])=>{const td=document.createElement('td');el.setAttribute('aria-label',label+' ngày '+d);td.appendChild(el);tr.appendChild(td);el.addEventListener('change',updateAttendanceSummary);el.addEventListener('input',updateAttendanceSummary)});attendanceRows.appendChild(tr)}updateAttendanceSummary();if(typeof calcOT==='function')calcOT();$('attendanceMsg').textContent=`Đã tạo ${n} ngày cho tháng ${month.value}/${year.value}.`}function saveAttendance(){const data={};readAttendance().forEach(r=>data[r.day]={trangThai:r.trangThai,gioDen:r.gioDen,gioVe:r.gioVe,otTrua:r.otTrua});try{localStorage.setItem(attKey(),JSON.stringify(data));$('attendanceMsg').textContent='Đã lưu bảng chấm công ✓'}catch(e){$('attendanceMsg').textContent='Không lưu được trong chế độ xem hiện tại.'}}$('saveAttendance').onclick=saveAttendance;month.onchange=buildAttendance;year.onchange=buildAttendance;$('clearAttendance').onclick=()=>{if(confirm('Xóa dữ liệu chấm công của tháng đang chọn?')){localStorage.removeItem(attKey());buildAttendance();$('attendanceMsg').textContent='Đã xóa dữ liệu tháng này.'}};$('exportAttendance').onclick=()=>{const data=readAttendance();const csv=[['Ngày','Thứ','Trạng thái','Giờ đến','Giờ về','OT trưa'],...data.map(r=>[`${String(r.day).padStart(2,'0')}/${String(month.value).padStart(2,'0')}/${year.value}`,weekdays[new Date(+year.value,+month.value-1,r.day).getDay()],r.trangThai,r.gioDen,r.gioVe,r.otTrua?'Có':'Không'])];const blob=new Blob(['\ufeff'+csv.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`bang-cham-cong-${year.value}-${String(month.value).padStart(2,'0')}.csv`;a.click();URL.revokeObjectURL(url)};
+// MỤC 3: tự tính lương hành chính và tăng ca
+const otRows=[{label:'150%',rate:1.5},{label:'210%',rate:2.1}];
+function buildOT(id,defaults){const body=$(id);body.replaceChildren();otRows.forEach((r,i)=>{const tr=document.createElement('tr');tr.dataset.rateIndex=i;const rate=document.createElement('td');rate.className='rate';rate.textContent=r.label;const htd=document.createElement('td');htd.className='hours';const input=document.createElement('input');input.type='number';input.min='0';input.step='0.5';input.value=defaults[i];input.dataset.rate=r.rate;input.dataset.otIndex=i;input.setAttribute('aria-label',id+' '+r.label+' số giờ');input.addEventListener('input',calcOT);htd.appendChild(input);const cash=document.createElement('td');cash.className='money';cash.id=id+'Money'+i;cash.textContent='0 đ';tr.append(rate,htd,cash);body.appendChild(tr)})}
+function updateRate(){const a=salaryData(),v={};a.forEach(x=>v[x.code]=x.value);const excluded=['LUONG.CB','C.CAN','THUONG','THOI VIEC','TT PHEP','S.LY'];const base=v['LUONG.CB']||0;const allowances=Object.keys(v).filter(k=>!excluded.includes(k)).reduce((sum,k)=>sum+(v[k]||0),0);if(base+allowances>0)$('hourRate').value=Math.round((base+allowances)/208);calcOT()}
+function timeToMinutes(value){if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(String(value||'')))return null;const parts=value.split(':').map(Number);return parts[0]*60+parts[1]}
+function attendanceHours(row){
+ // Chỉ tính ngày có trạng thái Đi làm và có đủ giờ đến/giờ về hợp lệ.
+ if(row.trangThai!=='Đi làm')return {regular:0,ot:0};
+ const start=timeToMinutes(row.gioDen),end=timeToMinutes(row.gioVe);
+ if(start===null||end===null||start===end)return {regular:0,ot:0};
+ let elapsed=end-start;if(elapsed<0)elapsed+=24*60;
+ // Ca chuẩn 08:00–17:00 có 1 giờ nghỉ trưa.
+ // Nếu tích OT trưa, giữ lại 1 giờ đó trong tổng giờ làm; nếu không, trừ 1 giờ nghỉ.
+ if(!row.otTrua)elapsed=Math.max(0,elapsed-60);
+ const hours=elapsed/60;
+ return {regular:Math.min(8,hours),ot:Math.max(0,hours-8)};
 }
 function calcOT(){
- const rate=Math.max(0,+$('hourRate').value||0);
- const rows=readAttendance();
- let regularHours=0,workDays=0;
- const totals=[
-  {label:'Trước 08:00',hours:0,mult:1.5},
-  {label:'OT trưa',hours:0,mult:1.5},
-  {label:'17:00–22:00',hours:0,mult:1.5},
-  {label:'22:00–07:00 hôm sau',hours:0,mult:2.1}
- ];
-
- rows.forEach(r=>{
-  if(r.status!=='Đi làm')return;
-  const start=timeMinutes(r.arrival),end0=timeMinutes(r.departure);
-  if(start===null||end0===null||start===end0)return;
-  workDays++;
-  let end=end0;
-  if(end<=start)end+=1440;
-  // Khung ca ngày chuẩn; hỗ trợ ca qua nửa đêm.
-  // Tính giao nhau với từng khung giờ, tránh tính trùng.
-  const intervals=[
-   [0,480,0],       // trước 08:00
-   [480,720,1],     // giờ hành chính sáng
-   [720,780,2],     // giờ nghỉ trưa
-   [780,1020,3],    // giờ hành chính chiều
-   [1020,1320,4],   // 17:00–22:00
-   [1320,1440,5]    // 22:00–24:00
-  ];
-  let reg=0,early=0,evening=0,night=0,lunchHours=0;
-  // Xử lý cả ngày bắt đầu và ngày tiếp theo nếu ca qua đêm.
-  for(let dayOffset=0;dayOffset<=1;dayOffset++){
-   const shift=dayOffset*1440;
-   intervals.forEach(([from,to,type])=>{
-    const h=overlap(start,end,from+shift,to+shift)/60;
-    if(type===0)early+=h;
-    if(type===1||type===3)reg+=h;
-    if(type===2)lunchHours+=h;
-    if(type===4)evening+=h;
-    if(type===5)night+=h;
-   });
-  }
-  // Phần sau nửa đêm đến 07:00 thuộc nhóm hệ số 210%.
-  night+=overlap(start,end,1440,1860)/60;
-  // Giờ nghỉ trưa không được tính nếu không đăng ký OT trưa.
-  // Khi có OT trưa, quy ước cộng thêm 0,5 giờ theo yêu cầu.
-  regularHours+=reg;
-  totals[0].hours+=early;
-  totals[1].hours+=r.lunch?0.5:0;
-  totals[2].hours+=evening;
-  totals[3].hours+=night;
+ const hr=Math.max(0,Number($('hourRate').value)||0);const rows=attendanceRows?readAttendance():[];let workDays=0,regularHours=0,availableOT=0;
+ rows.forEach(row=>{if(row.trangThai==='Đi làm')workDays++;const h=attendanceHours(row);regularHours+=h.regular;availableOT+=h.ot;});
+ // Tự phân loại OT theo khung giờ và giới hạn OT trong 12 giờ/tuần.
+ // Giờ OT trưa và sau 21:00 là OTN; giờ còn lại trong khung 08:00–21:00 là OT trong.
+ const byRate={inside:[0,0],outside:[0,0]}; let weeklyInside=0;
+ const mondayKey=d=>{const dt=new Date(d.getFullYear(),d.getMonth(),d.getDate());const day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')};
+ const weekUsed={};
+ rows.forEach(row=>{
+   if(row.trangThai!=='Đi làm') return;
+   const start=timeToMinutes(row.gioDen),end0=timeToMinutes(row.gioVe); if(start===null||end0===null||start===end0)return;
+   let end=end0;if(end<start)end+=1440;
+   const date=new Date(+year.value,+month.value-1,row.day);const wk=mondayKey(date);
+   // Tạo các đoạn theo phút. Tăng ca được hiểu là thời gian làm ngoài 8 giờ chuẩn/ngày.
+   let elapsed=end-start; if(!row.otTrua) elapsed=Math.max(0,elapsed-60);
+   let extra=Math.max(0,elapsed-480); if(extra<=0)return;
+   // Phân bổ từ cuối ca trở ngược, đúng với OT phát sinh sau giờ hành chính.
+   let cursor=end, left=extra*60;
+   while(left>0){const prev=cursor-1;const mins=1;const clock=((prev%1440)+1440)%1440;const isLunch=row.otTrua && clock>=720 && clock<780;const isOutside=isLunch || clock<480 || clock>=1260;const insideAllowed=!isOutside && (clock>=480&&clock<1260);let dest='outside';if(insideAllowed){const used=weekUsed[wk]||0;if(used<720){dest='inside';weekUsed[wk]=used+mins;}else dest='outside';}byRate[dest][0]+=mins/60;cursor-=mins;left-=mins;}
  });
- // Không tính giờ trưa thực tế vào giờ hành chính.
- const regularPay=Math.round(regularHours*rate);
- let totalOT=0;
- const detail=$('otDetails');detail.replaceChildren();
- totals.forEach(t=>{
-  const amount=Math.round(t.hours*rate*t.mult);totalOT+=amount;
-  const tr=document.createElement('tr');
-  [t.label,t.hours.toLocaleString('vi-VN',{maximumFractionDigits:2}),`${Math.round(t.mult*100)}%`,money(amount)].forEach((v,i)=>{
-   const td=document.createElement('td');td.textContent=v;if(i===3)td.className='money';tr.appendChild(td);
-  });
-  detail.appendChild(tr);
- });
- $('payWorkDays').textContent=workDays;
- $('payHourRate').textContent=money(rate);
- $('regularHours').textContent=regularHours.toLocaleString('vi-VN',{maximumFractionDigits:2})+' giờ';
- $('regularPay').textContent=money(regularPay);
- $('totalOT').textContent=money(totalOT);
- $('grandPay').textContent=money(regularPay+totalOT);
- $('otMsg').textContent='Đã tự tính theo giờ đến, giờ về, trạng thái và OT trưa.';
+ // Gộp các giờ cùng hệ số thành một dòng: 150% và 210%.
+ const inside150=byRate.inside[0],outside150=byRate.outside[0];
+ const outside210=rows.reduce((sum,row)=>{if(row.trangThai!=='Đi làm')return sum;const a=timeToMinutes(row.gioDen),b0=timeToMinutes(row.gioVe);if(a===null||b0===null||a===b0)return sum;let b=b0;if(b<a)b+=1440;let elapsed=b-a;if(!row.otTrua)elapsed=Math.max(0,elapsed-60);let extra=Math.max(0,elapsed-480);let count=0;for(let k=0;k<extra*60;k++){const clock=(((b-1-k)%1440)+1440)%1440;if(clock>=1260||clock<420)count++;}return sum+count/60;},0);
+ const requestedOT=inside150+outside150+outside210;const insideTotal=Math.round(inside150*hr*1.5),outsideTotal=Math.round(outside150*hr*1.5+outside210*hr*2.1);
+ $('inside').innerHTML='<tr><td class="rate">150%</td><td class="hours">'+inside150.toFixed(2)+' giờ</td><td class="money">'+money(insideTotal)+'</td></tr>';
+ $('outside').innerHTML='<tr><td class="rate">150% / 210%</td><td class="hours">'+(outside150+outside210).toFixed(2)+' giờ</td><td class="money">'+money(outsideTotal)+'</td></tr>';
+ $('insideGrand').textContent=money(insideTotal);$('outsideGrand').textContent=money(outsideTotal);const allOT=insideTotal+outsideTotal;
+ const regular=Math.round(regularHours*hr);$('payWorkDays').textContent=workDays;$('payHourRate').textContent=money(hr);$('regularPay').textContent=money(regular);$('grandPay').textContent=money(regular+allOT);
+ const msg=$('otMsg');if(msg&&requestedOT>availableOT+0.001)msg.textContent='Lưu ý: tổng giờ tăng ca nhập vào vượt giờ tăng ca theo giờ về; tiền OT đã được giới hạn theo giờ thực tế.';else if(msg&&availableOT===0&&requestedOT>0)msg.textContent='Không phát sinh giờ tăng ca theo giờ đến/giờ về; chưa tính tiền OT.';else if(msg)msg.textContent='Lương đã cập nhật theo giờ đến, giờ về và trạng thái chấm công.';
 }
-$('saveOT').onclick=()=>{
- try{
-  localStorage.setItem(otKey(),JSON.stringify({rate:$('hourRate').value,manual:$('hourRate').dataset.manual==='1'}));
-  $('otMsg').textContent='Đã lưu thiết lập lương giờ cho tháng này ✓';
- }catch(e){$('otMsg').textContent='Không lưu được thiết lập.'}
-};
-$('resetOT').onclick=()=>{
- delete $('hourRate').dataset.manual;updateRate();calcOT();
-};
-function loadOT(){
- try{
-  const x=JSON.parse(localStorage.getItem(otKey())||'null');
-  if(x&&x.rate!==undefined){
-   $('hourRate').value=x.rate;
-   if(x.manual)$('hourRate').dataset.manual='1';
-   else delete $('hourRate').dataset.manual;
-  }else delete $('hourRate').dataset.manual;
- }catch(e){}
- calcOT();
-}
-loadSalary();
-buildAttendance();
-loadOT();
+$('hourRate').addEventListener('input',calcOT);buildOT('inside',[0,0]);buildOT('outside',[0,0]);
+$('saveOT').onclick=()=>{try{localStorage.setItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'),JSON.stringify({rate:$('hourRate').value,inside:[...$('inside').querySelectorAll('input')].map(i=>i.value),outside:[...$('outside').querySelectorAll('input')].map(i=>i.value)}));$('otMsg').textContent='Đã lưu số giờ tăng ca cho tháng đang chọn ✓'}catch(e){$('otMsg').textContent='Không lưu được trong chế độ xem hiện tại.'}};
+$('resetOT').onclick=()=>{const a=[0,0],b=[0,0];['inside','outside'].forEach((id,j)=>$(id).querySelectorAll('input').forEach((i,n)=>i.value=(j?b:a)[n]));calcOT();$('otMsg').textContent='Đã khôi phục giờ mẫu.'};
+function loadOT(){try{const x=JSON.parse(localStorage.getItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'))||'null');if(x){if(x.rate!==undefined)$('hourRate').value=x.rate;['inside','outside'].forEach(id=>{const arr=x[id]||[];$(id).querySelectorAll('input').forEach((i,n)=>{if(arr[n]!==undefined)i.value=arr[n]})})}}catch(e){}calcOT()}
+document.querySelectorAll('.collapse-btn').forEach(btn=>{btn.addEventListener('click',()=>{const box=$(btn.dataset.target);const hide=box.style.display!=='none';box.style.display=hide?'none':'';btn.textContent=hide?'Hiện ▼':'Ẩn ▲';btn.setAttribute('aria-expanded',String(!hide));});});
+loadSalary();buildAttendance();loadOT();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
