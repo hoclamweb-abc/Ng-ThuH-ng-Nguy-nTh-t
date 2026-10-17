@@ -3,49 +3,46 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#000">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bảng chấm công và tính lương</title>
 <style>
 *{box-sizing:border-box}
-:root{color-scheme:dark;--bg:#000;--panel:#111;--line:#363636;--text:#f5f5f5}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
-header{position:sticky;top:0;z-index:5;background:#080808;padding:12px;border-bottom:1px solid #333}
+:root{color-scheme:dark}
+body{margin:0;background:#000;color:#f5f5f5;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+header{position:sticky;top:0;background:#080808;border-bottom:1px solid #333;padding:12px;z-index:5}
 header h1{text-align:center;font-size:18px}
 nav{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
 nav a{color:white;text-decoration:none;border:1px solid #444;border-radius:7px;padding:8px;font-size:12px}
 main{max-width:1000px;margin:auto;padding:12px}
-.panel{border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:16px;background:#080808;scroll-margin-top:120px}
+.panel{border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:16px;scroll-margin-top:120px}
 h2{font-size:20px}
-h3{font-size:16px;color:#ddd}
+h3{font-size:17px}
 .row{display:grid;grid-template-columns:minmax(0,1fr) 38%;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #242424}
 .name{font-size:14px;overflow-wrap:anywhere}
-.code{font-size:11px;color:#888;margin-top:3px}
+.code,.note,.message{font-size:12px;color:#aaa}
 input,select,button{font:inherit}
 input[type=number],input[type=time],select{width:100%;min-width:0;min-height:38px;background:#111;color:white;border:1px solid #454545;border-radius:5px;padding:7px}
 button{background:#1c1c1c;color:white;border:1px solid #555;border-radius:7px;padding:9px 12px;min-height:38px}
 button.primary{background:#eee;color:#111}
-.buttons,.controls,.summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.controls,.buttons,.summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 .field{display:flex;flex-direction:column;gap:5px}
-.field label,.note,.message{font-size:12px;color:#aaa}
+.field label{font-size:12px;color:#aaa}
 .pill{border:1px solid #333;background:#151515;padding:8px;border-radius:7px;font-size:12px}
 .table-wrap{overflow-x:auto;border:1px solid #444;border-radius:7px}
 table{border-collapse:collapse;width:100%;font-size:13px}
-th,td{border:1px solid #555;padding:7px 5px;text-align:center;white-space:nowrap}
+th,td{border:1px solid #555;padding:7px 5px;text-align:center}
 th{background:#1d1d1d}
 td{background:#050505}
-td input,td select{min-width:82px;font-size:12px}
-td.day{font-weight:bold}
+td input,td select{min-width:80px;font-size:12px}
 .ot-layout{max-width:620px;margin:auto}
 .ot-section{margin:20px 0}
 .ot-section h3{font-size:20px}
-.ot-table{table-layout:fixed;font-size:18px}
-.ot-table td{height:42px;padding:5px}
-.ot-table td.rate{width:75px}
-.ot-table td.hours{width:70px}
-.ot-table td.money{text-align:left;white-space:nowrap}
-.ot-table td.total{width:100px}
-.ot-table input{background:transparent;border:0;color:white;text-align:center;font-size:18px;padding:0;min-width:0;width:100%}
+.ot-table{table-layout:auto;width:100%;font-size:16px}
+.ot-table td{height:43px;padding:6px;vertical-align:middle;overflow-wrap:anywhere}
+.ot-table td.rate{width:72px}
+.ot-table td.hours{width:65px}
+.ot-table td.money{width:1%;text-align:right;white-space:nowrap;font-size:14px}
+.ot-table input{background:transparent;border:0;color:white;text-align:center;font-size:17px;padding:0;min-width:0;width:100%}
 .rate-box{display:flex;align-items:center;gap:8px;font-size:13px;color:#ccc}
 .rate-box input{max-width:140px}
 .time-pick{display:flex;flex-direction:column;gap:4px}
@@ -53,8 +50,8 @@ td.day{font-weight:bold}
 @media(max-width:420px){
 header h1{font-size:16px}
 .panel{padding:10px}
-.ot-table{font-size:16px}
-.ot-table td.money{font-size:13px}
+.ot-table{font-size:14px}
+.ot-table td.money{font-size:12px}
 }
 </style>
 </head>
@@ -86,7 +83,7 @@ header h1{font-size:16px}
 
 <section class="panel" id="muc2">
 <h2>2. Bảng chấm công</h2>
-<p class="note">Chọn trạng thái, giờ đến, giờ về và tích OT trưa nếu có. Dữ liệu lưu theo tháng trên trình duyệt này.</p>
+<p class="note">Chọn trạng thái, giờ đến, giờ về và OT trưa nếu có.</p>
 <div class="controls">
 <div class="field"><label for="month">Tháng</label><select id="month"></select></div>
 <div class="field"><label for="year">Năm</label><select id="year"></select></div>
@@ -101,7 +98,7 @@ header h1{font-size:16px}
 </div>
 <div class="table-wrap">
 <table>
-<thead><tr><th>Ngày</th><th>Thứ</th><th>Trạng thái</th><th>Giờ đến</th><th>Giờ về</th><th>OT trưa ✓</th></tr></thead>
+<thead><tr><th>Ngày</th><th>Thứ</th><th>Trạng thái</th><th>Giờ đến</th><th>Giờ về</th><th>OT trưa</th></tr></thead>
 <tbody id="attendanceRows"></tbody>
 </table>
 </div>
@@ -118,7 +115,7 @@ header h1{font-size:16px}
 <div class="ot-layout">
 <div class="ot-section">
 <h3>Lương giờ hành chính</h3>
-<div class="table-wrap"><table class="ot-table"><tbody><tr><td>Lương giờ × 8 giờ × ngày đi làm</td><td class="money" id="regularPay">0 đ</td></tr></tbody></table></div>
+<div class="table-wrap"><table class="ot-table"><tbody><tr><td>Lương hành chính</td><td class="money" id="regularPay">0 đ</td></tr></tbody></table></div>
 </div>
 <div class="ot-section">
 <h3>Lương tăng ca trong</h3>
@@ -135,13 +132,11 @@ header h1{font-size:16px}
 <div class="table-wrap"><table class="ot-table"><tbody><tr><td class="money" id="grandPay">0 đ</td></tr></tbody></table></div>
 </div>
 </div>
-<div class="rate-box">Lương giờ:
-<input id="hourRate" type="number" min="0" step="1" value="0"> đ/giờ
-</div>
-<p class="note">Mức tăng ca chỉ hiện khi số giờ lớn hơn 0. Lương hành chính tạm tính = lương giờ × 8 giờ × số ngày đi làm.</p>
+<div class="rate-box">Lương giờ: <input id="hourRate" type="number" min="0" step="1" value="0"> đ/giờ</div>
+<p class="note">Lương hành chính tạm tính = lương giờ × 8 giờ × số ngày đi làm. Tăng ca chỉ được tính khi có ít nhất một ngày đi làm và có nhập giờ tăng ca.</p>
 <div class="buttons">
 <button class="primary" id="saveOT">Lưu số giờ tăng ca</button>
-<button id="resetOT">Khôi phục giờ mẫu</button>
+<button id="resetOT">Đặt giờ tăng ca về 0</button>
 </div>
 <p class="message" id="otMsg"></p>
 </section>
@@ -165,29 +160,31 @@ const allowanceData=[
 ];
 const allow=$('allowances');
 allowanceData.forEach(([code,name,value])=>{
-const r=document.createElement('div');r.className='row';
-const label=document.createElement('div');label.className='name';
-label.textContent=name;
-const small=document.createElement('div');small.className='code';small.textContent=code;
-label.appendChild(small);
+const row=document.createElement('div');row.className='row';
+const label=document.createElement('div');label.className='name';label.textContent=name;
+const codeEl=document.createElement('div');codeEl.className='code';codeEl.textContent=code;label.appendChild(codeEl);
 const input=document.createElement('input');input.type='number';input.min='0';input.step='1000';input.className='salary-field';input.dataset.code=code;input.value=value;
-r.append(label,input);allow.appendChild(r);
+row.append(label,input);allow.appendChild(row);
 });
 const salaryInputs=[...document.querySelectorAll('.salary-field')];
 const salaryDefaults=salaryInputs.map(i=>({code:i.dataset.code,value:Number(i.value)||0}));
 function salaryData(){return salaryInputs.map(i=>({code:i.dataset.code,value:Math.max(0,Number(i.value)||0)}))}
 function loadSalary(){
-try{const a=JSON.parse(localStorage.getItem(salaryKey)||'null');
-if(Array.isArray(a))salaryInputs.forEach(i=>{const v=a.find(x=>x&&x.code===i.dataset.code);if(v)i.value=Math.max(0,Number(v.value)||0)})}catch(e){}
+try{const saved=JSON.parse(localStorage.getItem(salaryKey)||'null');
+if(Array.isArray(saved))salaryInputs.forEach(i=>{const v=saved.find(x=>x.code===i.dataset.code);if(v)i.value=Math.max(0,Number(v.value)||0)});
+}catch(e){}
 updateRate();
 }
-function saveSalary(show=true){
-try{localStorage.setItem(salaryKey,JSON.stringify(salaryData()));$('salaryMsg').textContent=show?'Đã lưu Mục 1 ✓':'';updateRate()}
+function saveSalary(){
+try{localStorage.setItem(salaryKey,JSON.stringify(salaryData()));$('salaryMsg').textContent='Đã lưu Mục 1 ✓';updateRate();}
 catch(e){$('salaryMsg').textContent='Không lưu được dữ liệu.'}
 }
-$('saveSalary').onclick=()=>saveSalary(true);
-$('resetSalary').onclick=()=>{salaryInputs.forEach(i=>{const v=salaryDefaults.find(x=>x.code===i.dataset.code);i.value=v?v.value:0});saveSalary(false);$('salaryMsg').textContent='Đã khôi phục số mẫu ✓'};
-salaryInputs.forEach(i=>i.addEventListener('input',()=>{updateRate();$('salaryMsg').textContent='Có thay đổi chưa lưu.'}));
+$('saveSalary').onclick=saveSalary;
+$('resetSalary').onclick=()=>{
+salaryInputs.forEach(i=>{const v=salaryDefaults.find(x=>x.code===i.dataset.code);i.value=v.value});
+saveSalary();
+};
+salaryInputs.forEach(i=>i.addEventListener('input',updateRate));
 
 /* MỤC 2 */
 const month=$('month'),year=$('year'),attendanceRows=$('attendanceRows');
@@ -199,62 +196,72 @@ const attKey=()=>`chamCongMuc2_${year.value}_${String(month.value).padStart(2,'0
 const weekdays=['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 
 function readAttendance(){
-return [...attendanceRows.querySelectorAll('tr')].map(tr=>({
-day:+tr.dataset.day,
+return [...attendanceRows.querySelectorAll('tr')].map(tr=>{
+const getTime=field=>{
+const sel=tr.querySelector(`select[data-f="${field}"]`);
+if(sel.value!=='__custom__')return sel.value;
+return tr.querySelector(`[data-custom="${field}"]`).value;
+};
+return {
+day:Number(tr.dataset.day),
 trangThai:tr.querySelector('[data-f="status"]').value,
-gioDen:tr.querySelector('[data-f="arrival"]').value,
-gioVe:tr.querySelector('[data-f="departure"]').value,
+gioDen:getTime('arrival'),gioVe:getTime('departure'),
 otTrua:tr.querySelector('[data-f="lunch"]').checked
-}));
+};
+});
 }
 function updateAttendanceSummary(){
-const a=readAttendance();
-$('countWork').textContent=a.filter(x=>x.trangThai==='Đi làm').length;
-$('countRest').textContent=a.filter(x=>x.trangThai==='Nghỉ').length;
-$('countLeave').textContent=a.filter(x=>x.trangThai==='Nghỉ phép').length;
-$('countLunch').textContent=a.filter(x=>x.otTrua).length;
+const data=readAttendance();
+$('countWork').textContent=data.filter(x=>x.trangThai==='Đi làm').length;
+$('countRest').textContent=data.filter(x=>x.trangThai==='Nghỉ').length;
+$('countLeave').textContent=data.filter(x=>x.trangThai==='Nghỉ phép').length;
+$('countLunch').textContent=data.filter(x=>x.otTrua).length;
 calcOT();
 }
 function buildAttendance(){
-let saved={};try{saved=JSON.parse(localStorage.getItem(attKey())||'{}')}catch(e){}
-const n=new Date(+year.value,+month.value,0).getDate();
+let saved={};
+try{saved=JSON.parse(localStorage.getItem(attKey())||'{}')}catch(e){}
+const days=new Date(Number(year.value),Number(month.value),0).getDate();
 attendanceRows.replaceChildren();
-for(let d=1;d<=n;d++){
+for(let d=1;d<=days;d++){
 const old=saved[d]||{};
-const date=new Date(+year.value,+month.value-1,d);
+const date=new Date(Number(year.value),Number(month.value)-1,d);
 const tr=document.createElement('tr');tr.dataset.day=d;
-const tdDate=document.createElement('td');tdDate.className='day';tdDate.textContent=String(d).padStart(2,'0')+'/'+String(month.value).padStart(2,'0');tr.appendChild(tdDate);
-const tdWeek=document.createElement('td');tdWeek.textContent=weekdays[date.getDay()];tr.appendChild(tdWeek);
-
+[String(d).padStart(2,'0')+'/'+String(month.value).padStart(2,'0'),weekdays[date.getDay()]].forEach((v,i)=>{
+const td=document.createElement('td');td.textContent=v;if(i===0)td.className='day';tr.appendChild(td);
+});
 const status=document.createElement('select');status.dataset.f='status';
-[['','—'],['Đi làm','Đi làm'],['Nghỉ','Nghỉ'],['Nghỉ phép','Nghỉ phép']].forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;status.appendChild(o)});
-status.value=old.trangThai||'';
+[['','—'],['Đi làm','Đi làm'],['Nghỉ','Nghỉ'],['Nghỉ phép','Nghỉ phép']].forEach(([v,t])=>{
+const o=document.createElement('option');o.value=v;o.textContent=t;status.appendChild(o);
+});
+status.value=old.trangThai||old.status||({'X':'Đi làm','N':'Nghỉ','P':'Nghỉ phép'}[old.status]||'');
 
-function timeSelect(field,current,defaultValue){
-const sel=document.createElement('select');sel.dataset.f=field;
-const choices=field==='arrival'?['08:00','08:15','08:30','09:00']:['17:00','17:30','18:00','18:30','19:00','19:30','20:00','21:00'];
-choices.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)});
-const other=document.createElement('option');other.value='__custom__';other.textContent='Khác';sel.appendChild(other);
-const input=document.createElement('input');input.type='time';input.dataset.custom=field;input.style.display='none';
-if(current&&!choices.includes(current)){const o=document.createElement('option');o.value=current;o.textContent=current;sel.add(o,sel.options.length-1)}
-sel.value=current||defaultValue;
-if(![...sel.options].some(o=>o.value===sel.value))sel.value=defaultValue;
-input.style.display=sel.value==='__custom__'?'block':'none';
-sel.addEventListener('change',()=>{input.style.display=sel.value==='__custom__'?'block':'none';updateAttendanceSummary()});
-input.addEventListener('change',()=>{if(input.value){let o=[...sel.options].find(o=>o.value===input.value);if(!o){o=document.createElement('option');o.value=input.value;o.textContent=input.value;sel.add(o,sel.options.length-1)}sel.value=input.value;input.style.display='none';updateAttendanceSummary()}});
-const wrap=document.createElement('div');wrap.className='time-pick';wrap.append(sel,input);return wrap;
+function makeTime(field,current,choices,defaultValue){
+const wrap=document.createElement('div');wrap.className='time-pick';
+const select=document.createElement('select');select.dataset.f=field;
+choices.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});
+const custom=document.createElement('option');custom.value='__custom__';custom.textContent='Khác';select.appendChild(custom);
+const input=document.createElement('input');input.type='text';input.placeholder='HH:MM';input.dataset.custom=field;input.style.display='none';
+if(current&&!choices.includes(current)){const o=document.createElement('option');o.value=current;o.textContent=current;select.add(o,select.options.length-1)}
+select.value=current||defaultValue;
+select.addEventListener('change',()=>{input.style.display=select.value==='__custom__'?'block':'none';updateAttendanceSummary()});
+input.addEventListener('change',()=>{if(/^([01]\d|2[0-3]):[0-5]\d$/.test(input.value)){let o=[...select.options].find(o=>o.value===input.value);if(!o){o=document.createElement('option');o.value=input.value;o.textContent=input.value;select.add(o,select.options.length-1)}select.value=input.value;input.style.display='none';updateAttendanceSummary()}else alert('Nhập giờ theo dạng HH:MM, ví dụ 08:15')});
+if(select.value==='__custom__')input.style.display='block';
+wrap.append(select,input);return wrap;
 }
-const arrival=timeSelect('arrival',old.gioDen,'08:00');
-const departure=timeSelect('departure',old.gioVe,'17:00');
-const lunch=document.createElement('input');lunch.type='checkbox';lunch.dataset.f='lunch';lunch.checked=!!old.otTrua;
+const arrival=makeTime('arrival',old.gioDen||old.arrival||'08:00',['08:00'],'08:00');
+const departure=makeTime('departure',old.gioVe||old.departure||'17:00',['17:00','17:30','18:00','18:30','19:00','19:30','20:00','21:00'],'17:00');
+const lunch=document.createElement('input');lunch.type='checkbox';lunch.dataset.f='lunch';lunch.checked=!!old.otTrua||old.ot==='1'||old.ot===1;
 [[status,'Trạng thái'],[arrival,'Giờ đến'],[departure,'Giờ về'],[lunch,'OT trưa']].forEach(([el,label])=>{
-const td=document.createElement('td');el.setAttribute('aria-label',label+' ngày '+d);td.appendChild(el);tr.appendChild(td);
-el.addEventListener('change',updateAttendanceSummary);el.addEventListener('input',updateAttendanceSummary);
+const td=document.createElement('td');td.appendChild(el);tr.appendChild(td);
+el.setAttribute('aria-label',label+' ngày '+d);
+el.addEventListener('change',updateAttendanceSummary);
+el.addEventListener('input',updateAttendanceSummary);
 });
 attendanceRows.appendChild(tr);
 }
 updateAttendanceSummary();
-$('attendanceMsg').textContent=`Đã tạo ${n} ngày cho tháng ${month.value}/${year.value}.`;
+$('attendanceMsg').textContent=`Đã tạo ${days} ngày cho tháng ${month.value}/${year.value}.`;
 }
 function saveAttendance(){
 const data={};readAttendance().forEach(r=>data[r.day]={trangThai:r.trangThai,gioDen:r.gioDen,gioVe:r.gioVe,otTrua:r.otTrua});
@@ -264,62 +271,68 @@ catch(e){$('attendanceMsg').textContent='Không lưu được dữ liệu.'}
 $('saveAttendance').onclick=saveAttendance;
 month.onchange=()=>{buildAttendance();loadOT()};
 year.onchange=()=>{buildAttendance();loadOT()};
-$('clearAttendance').onclick=()=>{if(confirm('Xóa dữ liệu chấm công tháng này?')){localStorage.removeItem(attKey());buildAttendance();$('attendanceMsg').textContent='Đã xóa dữ liệu tháng này.'}};
+$('clearAttendance').onclick=()=>{
+if(confirm('Xóa dữ liệu chấm công tháng này?')){localStorage.removeItem(attKey());buildAttendance();$('attendanceMsg').textContent='Đã xóa dữ liệu tháng này.'}
+};
 $('exportAttendance').onclick=()=>{
 const data=readAttendance();
-const csv=[['Ngày','Thứ','Trạng thái','Giờ đến','Giờ về','OT trưa'],...data.map(r=>[`${r.day}/${month.value}/${year.value}`,weekdays[new Date(+year.value,+month.value-1,r.day).getDay()],r.trangThai,r.gioDen,r.gioVe,r.otTrua?'Có':'Không'])];
+const csv=[['Ngày','Thứ','Trạng thái','Giờ đến','Giờ về','OT trưa'],...data.map(r=>[
+`${r.day}/${month.value}/${year.value}`,
+weekdays[new Date(Number(year.value),Number(month.value)-1,r.day).getDay()],
+r.trangThai,r.gioDen,r.gioVe,r.otTrua?'Có':'Không'
+])];
 const blob=new Blob(['\ufeff'+csv.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8;'});
 const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`bang-cham-cong-${year.value}-${month.value}.csv`;a.click();URL.revokeObjectURL(url);
 };
 
-/* MỤC 3: TĂNG CA */
+/* MỤC 3 */
 const otRows=[{label:'100%',rate:1},{label:'150%',rate:1.5},{label:'200%',rate:2},{label:'30%',rate:.3}];
-function buildOT(id,defaults){
+function buildOT(id){
 const body=$(id);body.replaceChildren();
-otRows.forEach((r,i)=>{
+otRows.forEach((item,index)=>{
 const tr=document.createElement('tr');
-const rate=document.createElement('td');rate.className='rate';rate.textContent=r.label;
-const htd=document.createElement('td');htd.className='hours';
-const input=document.createElement('input');input.type='number';input.min='0';input.step='0.5';input.value=defaults[i];input.dataset.rate=r.rate;input.dataset.otIndex=i;input.setAttribute('aria-label',id+' '+r.label+' số giờ');input.addEventListener('input',calcOT);
-htd.appendChild(input);
-const cash=document.createElement('td');cash.className='money';cash.id=id+'Money'+i;cash.textContent='0 đ';
-tr.append(rate,htd,cash);body.appendChild(tr);
+const rate=document.createElement('td');rate.className='rate';rate.textContent=item.label;
+const hourCell=document.createElement('td');hourCell.className='hours';
+const input=document.createElement('input');input.type='number';input.min='0';input.step='0.5';input.value='0';input.dataset.rate=item.rate;input.dataset.otIndex=index;
+input.addEventListener('input',calcOT);hourCell.appendChild(input);
+const cash=document.createElement('td');cash.className='money';cash.id=id+'Money'+index;cash.textContent='0 đ';
+tr.append(rate,hourCell,cash);body.appendChild(tr);
 });
 }
 function updateRate(){
-const v={};salaryData().forEach(x=>v[x.code]=x.value);
+const values={};salaryData().forEach(x=>values[x.code]=x.value);
 const excluded=['LUONG.CB','C.CAN','THUONG','THOI VIEC','TT PHEP','S.LY'];
-const base=v['LUONG.CB']||0;
-const allowances=Object.keys(v).filter(k=>!excluded.includes(k)).reduce((s,k)=>s+(v[k]||0),0);
+const base=values['LUONG.CB']||0;
+const allowances=Object.keys(values).filter(k=>!excluded.includes(k)).reduce((sum,k)=>sum+(values[k]||0),0);
 if(base+allowances>0)$('hourRate').value=Math.round((base+allowances)/208);
 calcOT();
 }
 function calcOT(){
-const hr=Math.max(0,Number($('hourRate').value)||0);
-let allOT=0;
+const rate=Math.max(0,Number($('hourRate').value)||0);
+const workDays=readAttendance().filter(x=>x.trangThai==='Đi làm').length;
+let totalOT=0;
 ['inside','outside'].forEach(id=>{
-let total=0;
-$(id).querySelectorAll('input[data-rate]').forEach(i=>{
-const index=Number(i.dataset.otIndex);
-const hours=Math.max(0,Number(i.value)||0);
-const amount=Math.round(hours*hr*Number(i.dataset.rate));
-total+=amount;
-i.closest('tr').style.display=hours>0?'':'none';
+let subtotal=0;
+$(id).querySelectorAll('input[data-rate]').forEach(input=>{
+const hours=Math.max(0,Number(input.value)||0);
+const multiplier=Number(input.dataset.rate)||0;
+const index=Number(input.dataset.otIndex);
+const amount=workDays>0?Math.round(hours*rate*multiplier):0;
+subtotal+=amount;
+input.closest('tr').style.display=(workDays>0&&hours>0)?'':'none';
 $(id+'Money'+index).textContent=money(amount);
 });
-$(id+'Grand').textContent=money(total);
-allOT+=total;
+$(id+'Grand').textContent=money(subtotal);
+totalOT+=subtotal;
 });
-const work=readAttendance().filter(x=>x.trangThai==='Đi làm').length;
-const regular=Math.round(work*8*hr);
-$('payWorkDays').textContent=work;
-$('payHourRate').textContent=money(hr);
-$('regularPay').textContent=money(regular);
-$('grandPay').textContent=money(regular+allOT);
+const regularPay=workDays>0?Math.round(workDays*8*rate):0;
+$('payWorkDays').textContent=workDays;
+$('payHourRate').textContent=money(rate);
+$('regularPay').textContent=money(regularPay);
+$('grandPay').textContent=money(regularPay+totalOT);
 }
 $('hourRate').addEventListener('input',calcOT);
-buildOT('inside',[0,0,1.5,0]);
-buildOT('outside',[0,1.5,3.5,0]);
+buildOT('inside');buildOT('outside');
 $('saveOT').onclick=()=>{
 try{
 localStorage.setItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'),JSON.stringify({
@@ -331,17 +344,16 @@ $('otMsg').textContent='Đã lưu số giờ tăng ca ✓';
 }catch(e){$('otMsg').textContent='Không lưu được dữ liệu.'}
 };
 $('resetOT').onclick=()=>{
-const a=[0,0,1.5,0],b=[0,1.5,3.5,0];
-['inside','outside'].forEach((id,j)=>$(id).querySelectorAll('input').forEach((i,n)=>i.value=(j?b:a)[n]));
-calcOT();$('otMsg').textContent='Đã khôi phục giờ mẫu.';
+['inside','outside'].forEach(id=>$(id).querySelectorAll('input').forEach(input=>input.value=0));
+calcOT();$('otMsg').textContent='Đã đặt giờ tăng ca về 0.';
 };
 function loadOT(){
 try{
 const key='muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0');
-const x=JSON.parse(localStorage.getItem(key)||'null');
-if(x){
-if(x.rate!==undefined)$('hourRate').value=x.rate;
-['inside','outside'].forEach(id=>{const arr=x[id]||[];$(id).querySelectorAll('input').forEach((i,n)=>{if(arr[n]!==undefined)i.value=arr[n]})});
+const saved=JSON.parse(localStorage.getItem(key)||'null');
+if(saved){
+if(saved.rate!==undefined)$('hourRate').value=saved.rate;
+['inside','outside'].forEach(id=>{const arr=saved[id]||[];$(id).querySelectorAll('input').forEach((input,index)=>{if(arr[index]!==undefined)input.value=arr[index]})});
 }
 }catch(e){}
 calcOT();
