@@ -9,7 +9,7 @@
 <main>
 <section class="panel" id="muc1"><h2 class="section-head">1. Bậc lương <button type="button" class="collapse-btn" data-target="muc1Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc1Body"><div class="row"><div class="name">Lương cơ bản<div class="code">LUONG.CB</div></div><input class="amount salary-field" type="number" min="0" step="1000" data-code="LUONG.CB" value="5500000"></div><h3>PHỤ CẤP</h3><div id="allowances"></div><div class="buttons"><button class="primary" id="saveSalary">Lưu Mục 1</button><button id="resetSalary">Khôi phục số mẫu</button></div><p class="message" id="salaryMsg" aria-live="polite"></p></div></section>
 <section class="panel" id="muc2"><h2 class="section-head">2. Bảng chấm công <button type="button" class="collapse-btn" data-target="muc2Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc2Body"><p class="note">Chọn trạng thái, nhập giờ đến/giờ về và tích OT trưa nếu có. Bảng lưu theo tháng trên trình duyệt thiết bị này.</p><div class="controls"><div class="field"><label for="month">Tháng</label><select id="month"></select></div><div class="field"><label for="year">Năm</label><select id="year"></select></div><button class="primary" id="saveAttendance">Lưu bảng chấm công</button><button id="exportAttendance">Xuất CSV</button></div><div class="summary"><div class="pill">Đi làm: <b id="countWork">0</b></div><div class="pill">Nghỉ: <b id="countRest">0</b></div><div class="pill">Nghỉ phép: <b id="countLeave">0</b></div><div class="pill">OT trưa: <b id="countLunch">0</b> ngày</div></div><div class="table-wrap"><table><thead><tr><th>Ngày</th><th>Thứ</th><th>Trạng thái</th><th>Giờ đến</th><th>Giờ về</th><th>OT trưa ✓</th></tr></thead><tbody id="attendanceRows"></tbody></table></div><p class="message" id="attendanceMsg" aria-live="polite"></p><div class="buttons"><button id="clearAttendance">Xóa dữ liệu tháng này</button></div></div></section>
-<section class="panel" id="muc3"><h2 class="section-head">3. Tiền lương <button type="button" class="collapse-btn" data-target="muc3Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc3Body"><div class="summary"><div class="pill">Ngày đi làm: <b id="payWorkDays">0</b></div><div class="pill">Lương giờ: <b id="payHourRate">0 đ</b></div></div><div class="ot-layout"><div class="ot-section"><h3>Lương giờ hành chính</h3><div class="table-wrap"><table class="ot-table"><tbody><tr><td>Lương giờ × giờ hành chính thực tế</td><td class="money" id="regularPay">0 đ</td></tr></tbody></table></div></div><div class="ot-section"><h3>Lương tăng ca trong</h3><div class="table-wrap"><table class="ot-table"><tbody id="inside"></tbody></table></div><p class="pill">Tổng tăng ca trong: <b id="insideGrand">0 đ</b></p></div><div class="ot-section"><h3>Lương tăng ca ngoài</h3><div class="table-wrap"><table class="ot-table"><tbody id="outside"></tbody></table></div><p class="pill">Tổng tăng ca ngoài: <b id="outsideGrand">0 đ</b></p></div><div class="ot-section"><h3>TỔNG TIỀN TẠM TÍNH</h3><div class="table-wrap"><table class="ot-table"><tbody><tr><td class="money" id="grandPay">0 đ</td></tr></tbody></table></div></div></div><div class="rate-box">Lương giờ (có thể chỉnh): <input id="hourRate" type="number" min="0" step="1" value="0"> đ/giờ</div><p class="note">Giờ làm được tính từ giờ đến–giờ về, trừ 1 giờ nghỉ trưa (nếu tích OT trưa thì không trừ giờ nghỉ). Tối đa 8 giờ/ngày là giờ hành chính; phần vượt quá 8 giờ là tăng ca. Nhập phân bổ giờ tăng ca vào các mức 100%/150%/200%/30% theo quy định công ty; tổng giờ nhập tăng ca không được vượt quá giờ tăng ca suy ra từ giờ về.</p><div class="buttons"><button class="primary" id="saveOT">Lưu số giờ tăng ca</button><button id="resetOT">Khôi phục giờ mẫu</button></div><p class="message" id="otMsg" aria-live="polite"></p></div></section>
+<section class="panel" id="muc3"><h2 class="section-head">3. Tiền lương <button type="button" class="collapse-btn" data-target="muc3Body" aria-expanded="true">Ẩn ▲</button></h2><div id="muc3Body"><div class="summary"><div class="pill">Ngày đi làm: <b id="payWorkDays">0</b></div><div class="pill">Lương giờ: <b id="payHourRate">0 đ</b></div></div><div class="ot-layout"><div class="ot-section"><h3>Lương giờ hành chính</h3><div class="table-wrap"><table class="ot-table"><tbody><tr><td>Lương giờ × giờ hành chính thực tế</td><td class="money" id="regularPay">0 đ</td></tr></tbody></table></div></div><div class="ot-section"><h3>Lương tăng ca trong</h3><div class="table-wrap"><table class="ot-table"><tbody id="inside"></tbody></table></div><p class="pill">Tổng tăng ca trong: <b id="insideGrand">0 đ</b></p></div><div class="ot-section"><h3>Lương tăng ca ngoài</h3><div class="table-wrap"><table class="ot-table"><tbody id="outside"></tbody></table></div><p class="pill">Tổng tăng ca ngoài: <b id="outsideGrand">0 đ</b></p></div><div class="ot-section"><h3>TỔNG TIỀN TẠM TÍNH</h3><div class="table-wrap"><table class="ot-table"><tbody><tr><td class="money" id="grandPay">0 đ</td></tr></tbody></table></div></div></div><div class="rate-box">Lương giờ (có thể chỉnh): <input id="hourRate" type="number" min="0" step="1" value="0"> đ/giờ</div><p class="note">Tính tự động theo giờ đến–giờ về. Nghỉ trưa 12:00–13:00; nếu tích OT trưa thì chỉ tính 12:30–13:00 (30 phút) là OTN 150%. OT trong ở khung 08:00–21:00 tối đa 12 giờ/tuần; phần vượt ngưỡng chuyển sang OTN. Hệ số cũ: 150% cho OT ngoài trừ khung 22:00–08:00 tính 210%.</p><div class="buttons"><button class="primary" id="saveOT">Lưu số giờ tăng ca</button><button id="resetOT">Khôi phục giờ mẫu</button></div><p class="message" id="otMsg" aria-live="polite"></p></div></section>
 </main>
 <script>
 (()=>{
@@ -42,34 +42,48 @@ function attendanceHours(row){
  return {regular:Math.min(8,hours),ot:Math.max(0,hours-8)};
 }
 function calcOT(){
- const hr=Math.max(0,Number($('hourRate').value)||0);const rows=attendanceRows?readAttendance():[];let workDays=0,regularHours=0,availableOT=0;
- rows.forEach(row=>{if(row.trangThai==='Đi làm')workDays++;const h=attendanceHours(row);regularHours+=h.regular;availableOT+=h.ot;});
- // Tự phân loại OT theo khung giờ và giới hạn OT trong 12 giờ/tuần.
- // Giờ OT trưa và sau 21:00 là OTN; giờ còn lại trong khung 08:00–21:00 là OT trong.
- const byRate={inside:[0,0],outside:[0,0]}; let weeklyInside=0;
- const mondayKey=d=>{const dt=new Date(d.getFullYear(),d.getMonth(),d.getDate());const day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')};
- const weekUsed={};
+ const hr=Math.max(0,Number($('hourRate').value)||0);const rows=attendanceRows?readAttendance():[];
+ let workDays=0,regularHours=0;const bucket={inside150:0,outside150:0,outside210:0};const weekUsed={};
+ const mondayKey=d=>{const dt=new Date(d.getFullYear(),d.getMonth(),d.getDate());dt.setDate(dt.getDate()-((dt.getDay()+6)%7));return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0')};
+ // Phân tích theo từng phút làm việc; mỗi phút chỉ được đưa vào đúng một nhóm.
  rows.forEach(row=>{
-   if(row.trangThai!=='Đi làm') return;
-   const start=timeToMinutes(row.gioDen),end0=timeToMinutes(row.gioVe); if(start===null||end0===null||start===end0)return;
-   let end=end0;if(end<start)end+=1440;
-   const date=new Date(+year.value,+month.value-1,row.day);const wk=mondayKey(date);
-   // Tạo các đoạn theo phút. Tăng ca được hiểu là thời gian làm ngoài 8 giờ chuẩn/ngày.
-   let elapsed=end-start; if(!row.otTrua) elapsed=Math.max(0,elapsed-60);
-   let extra=Math.max(0,elapsed-480); if(extra<=0)return;
-   // Phân bổ từ cuối ca trở ngược, đúng với OT phát sinh sau giờ hành chính.
-   let cursor=end, left=extra*60;
-   while(left>0){const prev=cursor-1;const mins=1;const clock=((prev%1440)+1440)%1440;const isLunch=row.otTrua && clock>=720 && clock<780;const isOutside=isLunch || clock<480 || clock>=1260;const insideAllowed=!isOutside && (clock>=480&&clock<1260);let dest='outside';if(insideAllowed){const used=weekUsed[wk]||0;if(used<720){dest='inside';weekUsed[wk]=used+mins;}else dest='outside';}byRate[dest][0]+=mins/60;cursor-=mins;left-=mins;}
+  if(row.trangThai!=='Đi làm')return;workDays++;
+  const start=timeToMinutes(row.gioDen),end0=timeToMinutes(row.gioVe);if(start===null||end0===null||start===end0)return;
+  let end=end0;if(end<start)end+=1440;
+  const date=new Date(+year.value,+month.value-1,row.day),wk=mondayKey(date);
+  const worked=[];
+  for(let t=start;t<end;t++){
+   const clock=((t%1440)+1440)%1440;
+   // Nghỉ trưa 12:00–13:00; nếu có OT trưa thì chỉ làm 12:30–13:00.
+   const lunchBreak=clock>=720&&clock<780&&!(row.otTrua&&clock>=750);
+   if(!lunchBreak)worked.push({clock});
+  }
+  // 30 phút OT trưa là OTN 150%, tách riêng và không tính lại ở phần giờ khác.
+  const lunchMinutes=row.otTrua&&start<780&&end>750?Math.max(0,Math.min(end,780)-Math.max(start,750)):0;
+  bucket.outside150+=lunchMinutes/60;
+  const normalMinutes=Math.min(480,Math.max(0,worked.length-lunchMinutes));regularHours+=normalMinutes/60;
+  // Các phút làm việc còn lại sau 8 giờ chuẩn là OT. Bỏ riêng 12:30–13:00 đã tính ở trên.
+  let regularLeft=480;
+  for(const item of worked){
+   const c=item.clock;
+   if(row.otTrua&&c>=750&&c<780)continue;
+   if(regularLeft>0){regularLeft--;continue;}
+   // Khung hệ số cũ: 22:00–08:00 = 210%; các khung OT còn lại = 150%.
+   const night=(c>=1320||c<480);
+   if(night){bucket.outside210+=1/60;continue;}
+   // Trong khung 08:00–21:00: tối đa 12 giờ/tuần; vượt ngưỡng chuyển sang OTN.
+   const used=weekUsed[wk]||0;
+   if(c>=480&&c<1260&&used<720){bucket.inside150+=1/60;weekUsed[wk]=used+1;}
+   else bucket.outside150+=1/60;
+  }
  });
- // Gộp các giờ cùng hệ số thành một dòng: 150% và 210%.
- const inside150=byRate.inside[0],outside150=byRate.outside[0];
- const outside210=rows.reduce((sum,row)=>{if(row.trangThai!=='Đi làm')return sum;const a=timeToMinutes(row.gioDen),b0=timeToMinutes(row.gioVe);if(a===null||b0===null||a===b0)return sum;let b=b0;if(b<a)b+=1440;let elapsed=b-a;if(!row.otTrua)elapsed=Math.max(0,elapsed-60);let extra=Math.max(0,elapsed-480);let count=0;for(let k=0;k<extra*60;k++){const clock=(((b-1-k)%1440)+1440)%1440;if(clock>=1260||clock<420)count++;}return sum+count/60;},0);
- const requestedOT=inside150+outside150+outside210;const insideTotal=Math.round(inside150*hr*1.5),outsideTotal=Math.round(outside150*hr*1.5+outside210*hr*2.1);
- $('inside').innerHTML='<tr><td class="rate">150%</td><td class="hours">'+inside150.toFixed(2)+' giờ</td><td class="money">'+money(insideTotal)+'</td></tr>';
- $('outside').innerHTML='<tr><td class="rate">150% / 210%</td><td class="hours">'+(outside150+outside210).toFixed(2)+' giờ</td><td class="money">'+money(outsideTotal)+'</td></tr>';
- $('insideGrand').textContent=money(insideTotal);$('outsideGrand').textContent=money(outsideTotal);const allOT=insideTotal+outsideTotal;
- const regular=Math.round(regularHours*hr);$('payWorkDays').textContent=workDays;$('payHourRate').textContent=money(hr);$('regularPay').textContent=money(regular);$('grandPay').textContent=money(regular+allOT);
- const msg=$('otMsg');if(msg&&requestedOT>availableOT+0.001)msg.textContent='Lưu ý: tổng giờ tăng ca nhập vào vượt giờ tăng ca theo giờ về; tiền OT đã được giới hạn theo giờ thực tế.';else if(msg&&availableOT===0&&requestedOT>0)msg.textContent='Không phát sinh giờ tăng ca theo giờ đến/giờ về; chưa tính tiền OT.';else if(msg)msg.textContent='Lương đã cập nhật theo giờ đến, giờ về và trạng thái chấm công.';
+ const insideTotal=Math.round(bucket.inside150*hr*1.5);
+ const outsideTotal=Math.round(bucket.outside150*hr*1.5+bucket.outside210*hr*2.1);
+ $('inside').innerHTML='<tr><td class="rate">150%</td><td class="hours">'+bucket.inside150.toFixed(2)+' giờ</td><td class="money">'+money(insideTotal)+'</td></tr>';
+ $('outside').innerHTML='<tr><td class="rate">150%</td><td class="hours">'+bucket.outside150.toFixed(2)+' giờ</td><td class="money">'+money(Math.round(bucket.outside150*hr*1.5))+'</td></tr><tr><td class="rate">210%</td><td class="hours">'+bucket.outside210.toFixed(2)+' giờ</td><td class="money">'+money(Math.round(bucket.outside210*hr*2.1))+'</td></tr>';
+ $('insideGrand').textContent=money(insideTotal);$('outsideGrand').textContent=money(outsideTotal);
+ const regular=Math.round(regularHours*hr);$('payWorkDays').textContent=workDays;$('payHourRate').textContent=money(hr);$('regularPay').textContent=money(regular);$('grandPay').textContent=money(regular+insideTotal+outsideTotal);
+ const msg=$('otMsg');if(msg)msg.textContent='Đã tính riêng OT trưa 30 phút, OT trong tối đa 12 giờ/tuần và OT ngoài theo hệ số cũ. Hãy đối chiếu bảng lương thực tế trước khi chốt.';
 }
 $('hourRate').addEventListener('input',calcOT);buildOT('inside',[0,0]);buildOT('outside',[0,0]);
 $('saveOT').onclick=()=>{try{localStorage.setItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'),JSON.stringify({rate:$('hourRate').value,inside:[...$('inside').querySelectorAll('input')].map(i=>i.value),outside:[...$('outside').querySelectorAll('input')].map(i=>i.value)}));$('otMsg').textContent='Đã lưu số giờ tăng ca cho tháng đang chọn ✓'}catch(e){$('otMsg').textContent='Không lưu được trong chế độ xem hiện tại.'}};
