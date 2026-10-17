@@ -430,7 +430,38 @@ const allowances=Object.keys(v).filter(k=>!excluded.includes(k)).reduce((s,k)=>s
 if(base+allowances>0)$('hourRate').value=Math.round((base+allowances)/208);
 calcOT();
 }
-function calcOT(){
+
+function calcOT() {
+    const rateInput = document.getElementById('hourRate');
+    const hr = Math.max(0, Number(rateInput.value) || 0);
+
+    ['inside', 'outside'].forEach(function(id) {
+        const table = document.getElementById(id);
+        if (!table) return;
+
+        let total = 0;
+
+        table.querySelectorAll('input[data-rate]').forEach(function(input) {
+            const hours = Math.max(0, Number(input.value) || 0);
+            const multiplier = Number(input.dataset.rate) || 0;
+            const index = input.dataset.otIndex;
+            const amount = Math.round(hours * hr * multiplier);
+
+            total += amount;
+
+            const moneyCell = document.getElementById(id + 'Money' + index);
+            if (moneyCell) {
+                moneyCell.textContent = money(amount);
+            }
+        });
+
+        const totalElement = document.getElementById(id + 'Total');
+        if (totalElement) {
+            totalElement.textContent = money(total);
+        }
+    });
+}
+
 const hr=Math.max(0,Number($('hourRate').value)||0);
 ['inside','outside'].forEach(id=>{
 let total=0;
