@@ -48,10 +48,10 @@ td input,td select{min-width:80px;font-size:12px}
 .time-pick{display:flex;flex-direction:column;gap:4px}
 .time-pick select,.time-pick input{min-width:88px}
 @media(max-width:420px){
-header h1{font-size:16px}
-.panel{padding:10px}
-.ot-table{font-size:14px}
-.ot-table td.money{font-size:12px}
+ header h1{font-size:16px}
+ .panel{padding:10px}
+ .ot-table{font-size:14px}
+ .ot-table td.money{font-size:12px}
 }
 </style>
 </head>
@@ -111,6 +111,7 @@ header h1{font-size:16px}
 <div class="summary">
 <div class="pill">Ngày đi làm: <b id="payWorkDays">0</b></div>
 <div class="pill">Lương giờ: <b id="payHourRate">0 đ</b></div>
+<div class="pill">Ngày có OT trưa: <b id="payLunchDays">0</b></div>
 </div>
 <div class="ot-layout">
 <div class="ot-section">
@@ -119,11 +120,13 @@ header h1{font-size:16px}
 </div>
 <div class="ot-section">
 <h3>Lương tăng ca trong</h3>
+<p class="note">OT trưa tự động cộng 30 phút/ngày ở mức 150% vào tổng tăng ca trong.</p>
 <div class="table-wrap"><table class="ot-table"><tbody id="inside"></tbody></table></div>
-<p class="pill">Tổng tăng ca trong: <b id="insideGrand">0 đ</b></p>
+<p class="pill">Tổng tăng ca trong (đã gồm OT trưa): <b id="insideGrand">0 đ</b></p>
 </div>
 <div class="ot-section">
 <h3>Lương tăng ca ngoài</h3>
+<p class="note">Nhập số giờ sau 22:00 ở dòng 210%.</p>
 <div class="table-wrap"><table class="ot-table"><tbody id="outside"></tbody></table></div>
 <p class="pill">Tổng tăng ca ngoài: <b id="outsideGrand">0 đ</b></p>
 </div>
@@ -133,7 +136,7 @@ header h1{font-size:16px}
 </div>
 </div>
 <div class="rate-box">Lương giờ: <input id="hourRate" type="number" min="0" step="1" value="0"> đ/giờ</div>
-<p class="note">Lương hành chính tạm tính = lương giờ × 8 giờ × số ngày đi làm. Tăng ca chỉ được tính khi có ít nhất một ngày đi làm và có nhập giờ tăng ca.</p>
+<p class="note">Lương hành chính = lương giờ × 8 giờ × số ngày đi làm. Nhập giờ tăng ca theo mức áp dụng. Giờ sau 22:00 tính 210%. OT trưa được cộng chung vào tăng ca trong. Nếu không có ngày đi làm thì không tính lương.</p>
 <div class="buttons">
 <button class="primary" id="saveOT">Lưu số giờ tăng ca</button>
 <button id="resetOT">Đặt giờ tăng ca về 0</button>
@@ -147,7 +150,7 @@ header h1{font-size:16px}
 const $=id=>document.getElementById(id);
 const money=n=>Math.round(Number(n)||0).toLocaleString('vi-VN')+' đ';
 
-/* MỤC 1 */
+/* MỤC 1: BẬC LƯƠNG */
 const salaryKey='bangLuongMuc1_only_v2';
 const allowanceData=[
 ['T.NIEN','Tiền niên',600000],['CDDB','CĐĐB',1000000],
@@ -160,33 +163,34 @@ const allowanceData=[
 ];
 const allow=$('allowances');
 allowanceData.forEach(([code,name,value])=>{
-const row=document.createElement('div');row.className='row';
-const label=document.createElement('div');label.className='name';label.textContent=name;
-const codeEl=document.createElement('div');codeEl.className='code';codeEl.textContent=code;label.appendChild(codeEl);
-const input=document.createElement('input');input.type='number';input.min='0';input.step='1000';input.className='salary-field';input.dataset.code=code;input.value=value;
-row.append(label,input);allow.appendChild(row);
+ const row=document.createElement('div');row.className='row';
+ const label=document.createElement('div');label.className='name';label.textContent=name;
+ const codeEl=document.createElement('div');codeEl.className='code';codeEl.textContent=code;label.appendChild(codeEl);
+ const input=document.createElement('input');input.type='number';input.min='0';input.step='1000';input.className='salary-field';input.dataset.code=code;input.value=value;
+ row.append(label,input);allow.appendChild(row);
 });
 const salaryInputs=[...document.querySelectorAll('.salary-field')];
 const salaryDefaults=salaryInputs.map(i=>({code:i.dataset.code,value:Number(i.value)||0}));
 function salaryData(){return salaryInputs.map(i=>({code:i.dataset.code,value:Math.max(0,Number(i.value)||0)}))}
 function loadSalary(){
-try{const saved=JSON.parse(localStorage.getItem(salaryKey)||'null');
-if(Array.isArray(saved))salaryInputs.forEach(i=>{const v=saved.find(x=>x.code===i.dataset.code);if(v)i.value=Math.max(0,Number(v.value)||0)});
-}catch(e){}
-updateRate();
+ try{
+  const saved=JSON.parse(localStorage.getItem(salaryKey)||'null');
+  if(Array.isArray(saved))salaryInputs.forEach(i=>{const v=saved.find(x=>x.code===i.dataset.code);if(v)i.value=Math.max(0,Number(v.value)||0)});
+ }catch(e){}
+ updateRate();
 }
 function saveSalary(){
-try{localStorage.setItem(salaryKey,JSON.stringify(salaryData()));$('salaryMsg').textContent='Đã lưu Mục 1 ✓';updateRate();}
-catch(e){$('salaryMsg').textContent='Không lưu được dữ liệu.'}
+ try{localStorage.setItem(salaryKey,JSON.stringify(salaryData()));$('salaryMsg').textContent='Đã lưu Mục 1 ✓';updateRate()}
+ catch(e){$('salaryMsg').textContent='Không lưu được dữ liệu.'}
 }
 $('saveSalary').onclick=saveSalary;
 $('resetSalary').onclick=()=>{
-salaryInputs.forEach(i=>{const v=salaryDefaults.find(x=>x.code===i.dataset.code);i.value=v.value});
-saveSalary();
+ salaryInputs.forEach(i=>{const v=salaryDefaults.find(x=>x.code===i.dataset.code);i.value=v.value});
+ saveSalary();
 };
 salaryInputs.forEach(i=>i.addEventListener('input',updateRate));
 
-/* MỤC 2 */
+/* MỤC 2: CHẤM CÔNG */
 const month=$('month'),year=$('year'),attendanceRows=$('attendanceRows');
 const now=new Date();
 for(let m=1;m<=12;m++){const o=document.createElement('option');o.value=m;o.textContent=String(m).padStart(2,'0');month.appendChild(o)}
@@ -196,167 +200,197 @@ const attKey=()=>`chamCongMuc2_${year.value}_${String(month.value).padStart(2,'0
 const weekdays=['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 
 function readAttendance(){
-return [...attendanceRows.querySelectorAll('tr')].map(tr=>{
-const getTime=field=>{
-const sel=tr.querySelector(`select[data-f="${field}"]`);
-if(sel.value!=='__custom__')return sel.value;
-return tr.querySelector(`[data-custom="${field}"]`).value;
-};
-return {
-day:Number(tr.dataset.day),
-trangThai:tr.querySelector('[data-f="status"]').value,
-gioDen:getTime('arrival'),gioVe:getTime('departure'),
-otTrua:tr.querySelector('[data-f="lunch"]').checked
-};
-});
+ return [...attendanceRows.querySelectorAll('tr')].map(tr=>{
+  const getTime=field=>{
+   const sel=tr.querySelector(`select[data-f="${field}"]`);
+   if(sel.value!=='__custom__')return sel.value;
+   return tr.querySelector(`[data-custom="${field}"]`).value;
+  };
+  return {
+   day:Number(tr.dataset.day),
+   trangThai:tr.querySelector('[data-f="status"]').value,
+   gioDen:getTime('arrival'),gioVe:getTime('departure'),
+   otTrua:tr.querySelector('[data-f="lunch"]').checked
+  };
+ });
 }
 function updateAttendanceSummary(){
-const data=readAttendance();
-$('countWork').textContent=data.filter(x=>x.trangThai==='Đi làm').length;
-$('countRest').textContent=data.filter(x=>x.trangThai==='Nghỉ').length;
-$('countLeave').textContent=data.filter(x=>x.trangThai==='Nghỉ phép').length;
-$('countLunch').textContent=data.filter(x=>x.otTrua).length;
-calcOT();
+ const data=readAttendance();
+ $('countWork').textContent=data.filter(x=>x.trangThai==='Đi làm').length;
+ $('countRest').textContent=data.filter(x=>x.trangThai==='Nghỉ').length;
+ $('countLeave').textContent=data.filter(x=>x.trangThai==='Nghỉ phép').length;
+ $('countLunch').textContent=data.filter(x=>x.trangThai==='Đi làm'&&x.otTrua).length;
+ calcOT();
 }
 function buildAttendance(){
-let saved={};
-try{saved=JSON.parse(localStorage.getItem(attKey())||'{}')}catch(e){}
-const days=new Date(Number(year.value),Number(month.value),0).getDate();
-attendanceRows.replaceChildren();
-for(let d=1;d<=days;d++){
-const old=saved[d]||{};
-const date=new Date(Number(year.value),Number(month.value)-1,d);
-const tr=document.createElement('tr');tr.dataset.day=d;
-[String(d).padStart(2,'0')+'/'+String(month.value).padStart(2,'0'),weekdays[date.getDay()]].forEach((v,i)=>{
-const td=document.createElement('td');td.textContent=v;if(i===0)td.className='day';tr.appendChild(td);
-});
-const status=document.createElement('select');status.dataset.f='status';
-[['','—'],['Đi làm','Đi làm'],['Nghỉ','Nghỉ'],['Nghỉ phép','Nghỉ phép']].forEach(([v,t])=>{
-const o=document.createElement('option');o.value=v;o.textContent=t;status.appendChild(o);
-});
-status.value=old.trangThai||old.status||({'X':'Đi làm','N':'Nghỉ','P':'Nghỉ phép'}[old.status]||'');
+ let saved={};
+ try{saved=JSON.parse(localStorage.getItem(attKey())||'{}')}catch(e){}
+ const days=new Date(Number(year.value),Number(month.value),0).getDate();
+ attendanceRows.replaceChildren();
+ for(let d=1;d<=days;d++){
+  const old=saved[d]||{};
+  const date=new Date(Number(year.value),Number(month.value)-1,d);
+  const tr=document.createElement('tr');tr.dataset.day=d;
+  [String(d).padStart(2,'0')+'/'+String(month.value).padStart(2,'0'),weekdays[date.getDay()]].forEach((v,i)=>{
+   const td=document.createElement('td');td.textContent=v;if(i===0)td.className='day';tr.appendChild(td);
+  });
+  const status=document.createElement('select');status.dataset.f='status';
+  [['','—'],['Đi làm','Đi làm'],['Nghỉ','Nghỉ'],['Nghỉ phép','Nghỉ phép']].forEach(([v,t])=>{
+   const o=document.createElement('option');o.value=v;o.textContent=t;status.appendChild(o);
+  });
+  status.value=old.trangThai||({'X':'Đi làm','N':'Nghỉ','P':'Nghỉ phép'}[old.status]||old.status||'');
 
-function makeTime(field,current,choices,defaultValue){
-const wrap=document.createElement('div');wrap.className='time-pick';
-const select=document.createElement('select');select.dataset.f=field;
-choices.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});
-const custom=document.createElement('option');custom.value='__custom__';custom.textContent='Khác';select.appendChild(custom);
-const input=document.createElement('input');input.type='text';input.placeholder='HH:MM';input.dataset.custom=field;input.style.display='none';
-if(current&&!choices.includes(current)){const o=document.createElement('option');o.value=current;o.textContent=current;select.add(o,select.options.length-1)}
-select.value=current||defaultValue;
-select.addEventListener('change',()=>{input.style.display=select.value==='__custom__'?'block':'none';updateAttendanceSummary()});
-input.addEventListener('change',()=>{if(/^([01]\d|2[0-3]):[0-5]\d$/.test(input.value)){let o=[...select.options].find(o=>o.value===input.value);if(!o){o=document.createElement('option');o.value=input.value;o.textContent=input.value;select.add(o,select.options.length-1)}select.value=input.value;input.style.display='none';updateAttendanceSummary()}else alert('Nhập giờ theo dạng HH:MM, ví dụ 08:15')});
-if(select.value==='__custom__')input.style.display='block';
-wrap.append(select,input);return wrap;
-}
-const arrival=makeTime('arrival',old.gioDen||old.arrival||'08:00',['08:00'],'08:00');
-const departure=makeTime('departure',old.gioVe||old.departure||'17:00',['17:00','17:30','18:00','18:30','19:00','19:30','20:00','21:00'],'17:00');
-const lunch=document.createElement('input');lunch.type='checkbox';lunch.dataset.f='lunch';lunch.checked=!!old.otTrua||old.ot==='1'||old.ot===1;
-[[status,'Trạng thái'],[arrival,'Giờ đến'],[departure,'Giờ về'],[lunch,'OT trưa']].forEach(([el,label])=>{
-const td=document.createElement('td');td.appendChild(el);tr.appendChild(td);
-el.setAttribute('aria-label',label+' ngày '+d);
-el.addEventListener('change',updateAttendanceSummary);
-el.addEventListener('input',updateAttendanceSummary);
-});
-attendanceRows.appendChild(tr);
-}
-updateAttendanceSummary();
-$('attendanceMsg').textContent=`Đã tạo ${days} ngày cho tháng ${month.value}/${year.value}.`;
+  function makeTime(field,current,choices,defaultValue){
+   const wrap=document.createElement('div');wrap.className='time-pick';
+   const select=document.createElement('select');select.dataset.f=field;
+   choices.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;select.appendChild(o)});
+   const custom=document.createElement('option');custom.value='__custom__';custom.textContent='Khác';select.appendChild(custom);
+   const input=document.createElement('input');input.type='text';input.placeholder='HH:MM';input.dataset.custom=field;input.style.display='none';
+   if(current&&!choices.includes(current)){const o=document.createElement('option');o.value=current;o.textContent=current;select.add(o,select.options.length-1)}
+   select.value=current||defaultValue;
+   select.addEventListener('change',()=>{input.style.display=select.value==='__custom__'?'block':'none';updateAttendanceSummary()});
+   input.addEventListener('change',()=>{
+    if(/^([01]\d|2[0-3]):[0-5]\d$/.test(input.value)){
+     let o=[...select.options].find(o=>o.value===input.value);
+     if(!o){o=document.createElement('option');o.value=input.value;o.textContent=input.value;select.add(o,select.options.length-1)}
+     select.value=input.value;input.style.display='none';updateAttendanceSummary();
+    }else alert('Nhập giờ theo dạng HH:MM, ví dụ 08:15');
+   });
+   if(select.value==='__custom__')input.style.display='block';
+   wrap.append(select,input);return wrap;
+  }
+  const arrival=makeTime('arrival',old.gioDen||old.arrival||'08:00',['08:00'],'08:00');
+  const departure=makeTime('departure',old.gioVe||old.departure||'17:00',['17:00','17:30','18:00','18:30','19:00','19:30','20:00','21:00'],'17:00');
+  const lunch=document.createElement('input');lunch.type='checkbox';lunch.dataset.f='lunch';lunch.checked=!!old.otTrua||old.ot==='1'||old.ot===1;
+  [[status,'Trạng thái'],[arrival,'Giờ đến'],[departure,'Giờ về'],[lunch,'OT trưa']].forEach(([el,label])=>{
+   const td=document.createElement('td');td.appendChild(el);tr.appendChild(td);
+   el.setAttribute('aria-label',label+' ngày '+d);
+   el.addEventListener('change',updateAttendanceSummary);
+   el.addEventListener('input',updateAttendanceSummary);
+  });
+  attendanceRows.appendChild(tr);
+ }
+ updateAttendanceSummary();
+ $('attendanceMsg').textContent=`Đã tạo ${days} ngày cho tháng ${month.value}/${year.value}.`;
 }
 function saveAttendance(){
-const data={};readAttendance().forEach(r=>data[r.day]={trangThai:r.trangThai,gioDen:r.gioDen,gioVe:r.gioVe,otTrua:r.otTrua});
-try{localStorage.setItem(attKey(),JSON.stringify(data));$('attendanceMsg').textContent='Đã lưu bảng chấm công ✓'}
-catch(e){$('attendanceMsg').textContent='Không lưu được dữ liệu.'}
+ const data={};readAttendance().forEach(r=>data[r.day]={trangThai:r.trangThai,gioDen:r.gioDen,gioVe:r.gioVe,otTrua:r.otTrua});
+ try{localStorage.setItem(attKey(),JSON.stringify(data));$('attendanceMsg').textContent='Đã lưu bảng chấm công ✓'}
+ catch(e){$('attendanceMsg').textContent='Không lưu được dữ liệu.'}
 }
 $('saveAttendance').onclick=saveAttendance;
 month.onchange=()=>{buildAttendance();loadOT()};
 year.onchange=()=>{buildAttendance();loadOT()};
 $('clearAttendance').onclick=()=>{
-if(confirm('Xóa dữ liệu chấm công tháng này?')){localStorage.removeItem(attKey());buildAttendance();$('attendanceMsg').textContent='Đã xóa dữ liệu tháng này.'}
+ if(confirm('Xóa dữ liệu chấm công tháng này?')){localStorage.removeItem(attKey());buildAttendance();$('attendanceMsg').textContent='Đã xóa dữ liệu tháng này.'}
 };
 $('exportAttendance').onclick=()=>{
-const data=readAttendance();
-const csv=[['Ngày','Thứ','Trạng thái','Giờ đến','Giờ về','OT trưa'],...data.map(r=>[
-`${r.day}/${month.value}/${year.value}`,
-weekdays[new Date(Number(year.value),Number(month.value)-1,r.day).getDay()],
-r.trangThai,r.gioDen,r.gioVe,r.otTrua?'Có':'Không'
-])];
-const blob=new Blob(['\ufeff'+csv.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8;'});
-const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`bang-cham-cong-${year.value}-${month.value}.csv`;a.click();URL.revokeObjectURL(url);
+ const data=readAttendance();
+ const csv=[['Ngày','Thứ','Trạng thái','Giờ đến','Giờ về','OT trưa'],...data.map(r=>[
+  `${r.day}/${month.value}/${year.value}`,
+  weekdays[new Date(Number(year.value),Number(month.value)-1,r.day).getDay()],
+  r.trangThai,r.gioDen,r.gioVe,r.otTrua?'Có':'Không'
+ ])];
+ const blob=new Blob(['\ufeff'+csv.map(row=>row.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n')],{type:'text/csv;charset=utf-8;'});
+ const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`bang-cham-cong-${year.value}-${month.value}.csv`;a.click();URL.revokeObjectURL(url);
 };
 
-/* MỤC 3 */
-const otRows=[{label:'100%',rate:1},{label:'150%',rate:1.5},{label:'200%',rate:2},{label:'30%',rate:.3}];
+/* MỤC 3: TIỀN LƯƠNG VÀ TĂNG CA */
+const otRows=[
+ {label:'100%',rate:1},
+ {label:'150%',rate:1.5},
+ {label:'200%',rate:2},
+ {label:'210%',rate:2.1},
+ {label:'30%',rate:0.3}
+];
 function buildOT(id){
-const body=$(id);body.replaceChildren();
-otRows.forEach((item,index)=>{
-const tr=document.createElement('tr');
-const rate=document.createElement('td');rate.className='rate';rate.textContent=item.label;
-const hourCell=document.createElement('td');hourCell.className='hours';
-const input=document.createElement('input');input.type='number';input.min='0';input.step='0.5';input.value='0';input.dataset.rate=item.rate;input.dataset.otIndex=index;
-input.addEventListener('input',calcOT);hourCell.appendChild(input);
-const cash=document.createElement('td');cash.className='money';cash.id=id+'Money'+index;cash.textContent='0 đ';
-tr.append(rate,hourCell,cash);body.appendChild(tr);
-});
+ const body=$(id);body.replaceChildren();
+ otRows.forEach((item,index)=>{
+  const tr=document.createElement('tr');
+  const rateCell=document.createElement('td');rateCell.className='rate';rateCell.textContent=item.label;
+  const hourCell=document.createElement('td');hourCell.className='hours';
+  const input=document.createElement('input');input.type='number';input.min='0';input.step='0.5';input.value='0';input.dataset.rate=item.rate;input.dataset.otIndex=index;
+  input.setAttribute('aria-label',`Số giờ tăng ca ${item.label}`);
+  input.addEventListener('input',calcOT);hourCell.appendChild(input);
+  const cash=document.createElement('td');cash.className='money';cash.id=id+'Money'+index;cash.textContent='0 đ';
+  tr.append(rateCell,hourCell,cash);body.appendChild(tr);
+ });
 }
 function updateRate(){
-const values={};salaryData().forEach(x=>values[x.code]=x.value);
-const excluded=['LUONG.CB','C.CAN','THUONG','THOI VIEC','TT PHEP','S.LY'];
-const base=values['LUONG.CB']||0;
-const allowances=Object.keys(values).filter(k=>!excluded.includes(k)).reduce((sum,k)=>sum+(values[k]||0),0);
-if(base+allowances>0)$('hourRate').value=Math.round((base+allowances)/208);
-calcOT();
+ const values={};salaryData().forEach(x=>values[x.code]=x.value);
+ const excluded=['LUONG.CB','C.CAN','THUONG','THOI VIEC','TT PHEP','S.LY'];
+ const base=values['LUONG.CB']||0;
+ const allowances=Object.keys(values).filter(k=>!excluded.includes(k)).reduce((sum,k)=>sum+(values[k]||0),0);
+ $('hourRate').value=Math.round((base+allowances)/208);
+ calcOT();
 }
 function calcOT(){
-const rate=Math.max(0,Number($('hourRate').value)||0);
-const workDays=readAttendance().filter(x=>x.trangThai==='Đi làm').length;
-let totalOT=0;
-['inside','outside'].forEach(id=>{
-let subtotal=0;
-$(id).querySelectorAll('input[data-rate]').forEach(input=>{
-const hours=Math.max(0,Number(input.value)||0);
-const multiplier=Number(input.dataset.rate)||0;
-const index=Number(input.dataset.otIndex);
-const amount=workDays>0?Math.round(hours*rate*multiplier):0;
-subtotal+=amount;
-input.closest('tr').style.display=(workDays>0&&hours>0)?'':'none';
-$(id+'Money'+index).textContent=money(amount);
-});
-$(id+'Grand').textContent=money(subtotal);
-totalOT+=subtotal;
-});
-const regularPay=workDays>0?Math.round(workDays*8*rate):0;
-$('payWorkDays').textContent=workDays;
-$('payHourRate').textContent=money(rate);
-$('regularPay').textContent=money(regularPay);
-$('grandPay').textContent=money(regularPay+totalOT);
+ const rate=Math.max(0,Number($('hourRate').value)||0);
+ const attendance=readAttendance();
+ const workDays=attendance.filter(x=>x.trangThai==='Đi làm').length;
+ const lunchDays=attendance.filter(x=>x.trangThai==='Đi làm'&&x.otTrua).length;
+
+ // Mỗi ngày có OT trưa được cộng 0,5 giờ ở mức 150%.
+ const lunchOT=workDays>0?Math.round(lunchDays*0.5*rate*1.5):0;
+ let totalOT=0;
+
+ ['inside','outside'].forEach(id=>{
+  let subtotal=0;
+  $(id).querySelectorAll('input[data-rate]').forEach(input=>{
+   const hours=Math.max(0,Number(input.value)||0);
+   const multiplier=Number(input.dataset.rate)||0;
+   const index=Number(input.dataset.otIndex);
+   const amount=workDays>0?Math.round(hours*rate*multiplier):0;
+   subtotal+=amount;
+   input.closest('tr').style.display=(workDays>0&&hours>0)?'':'none';
+   $(id+'Money'+index).textContent=money(amount);
+  });
+
+  // Gộp OT trưa vào tổng tăng ca trong, không tạo khoản riêng.
+  if(id==='inside')subtotal+=lunchOT;
+
+  $(id+'Grand').textContent=money(subtotal);
+  totalOT+=subtotal;
+ });
+
+ const regularPay=workDays>0?Math.round(workDays*8*rate):0;
+ $('payWorkDays').textContent=workDays;
+ $('payLunchDays').textContent=lunchDays;
+ $('payHourRate').textContent=money(rate);
+ $('regularPay').textContent=money(regularPay);
+ $('grandPay').textContent=money(regularPay+totalOT);
 }
 $('hourRate').addEventListener('input',calcOT);
 buildOT('inside');buildOT('outside');
+
 $('saveOT').onclick=()=>{
-try{
-localStorage.setItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'),JSON.stringify({
-rate:$('hourRate').value,
-inside:[...$('inside').querySelectorAll('input')].map(i=>i.value),
-outside:[...$('outside').querySelectorAll('input')].map(i=>i.value)
-}));
-$('otMsg').textContent='Đã lưu số giờ tăng ca ✓';
-}catch(e){$('otMsg').textContent='Không lưu được dữ liệu.'}
+ try{
+  localStorage.setItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'),JSON.stringify({
+   rate:$('hourRate').value,
+   inside:[...$('inside').querySelectorAll('input')].map(i=>i.value),
+   outside:[...$('outside').querySelectorAll('input')].map(i=>i.value)
+  }));
+  $('otMsg').textContent='Đã lưu số giờ tăng ca ✓';
+ }catch(e){$('otMsg').textContent='Không lưu được dữ liệu.'}
 };
 $('resetOT').onclick=()=>{
-['inside','outside'].forEach(id=>$(id).querySelectorAll('input').forEach(input=>input.value=0));
-calcOT();$('otMsg').textContent='Đã đặt giờ tăng ca về 0.';
+ ['inside','outside'].forEach(id=>$(id).querySelectorAll('input').forEach(input=>input.value=0));
+ calcOT();$('otMsg').textContent='Đã đặt giờ tăng ca về 0.';
 };
 function loadOT(){
-try{
-const key='muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0');
-const saved=JSON.parse(localStorage.getItem(key)||'null');
-if(saved){
-if(saved.rate!==undefined)$('hourRate').value=saved.rate;
-['inside','outside'].forEach(id=>{const arr=saved[id]||[];$(id).querySelectorAll('input').forEach((input,index)=>{if(arr[index]!==undefined)input.value=arr[index]})});
-}
-}catch(e){}
-calcOT();
+ try{
+  const key='muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0');
+  const saved=JSON.parse(localStorage.getItem(key)||'null');
+  ['inside','outside'].forEach(id=>$(id).querySelectorAll('input').forEach(input=>input.value=0));
+  if(saved){
+   if(saved.rate!==undefined)$('hourRate').value=saved.rate;
+   ['inside','outside'].forEach(id=>{
+    const arr=saved[id]||[];
+    $(id).querySelectorAll('input').forEach((input,index)=>{if(arr[index]!==undefined)input.value=arr[index]});
+   });
+  }
+ }catch(e){}
+ calcOT();
 }
 loadSalary();
 buildAttendance();
