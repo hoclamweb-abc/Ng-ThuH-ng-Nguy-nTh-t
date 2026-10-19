@@ -110,7 +110,58 @@ function saveOTData(show=true){try{localStorage.setItem('muc3OT_'+year.value+'_'
 $('saveOT').onclick=()=>saveOTData(true);
 $('resetOT').onclick=()=>{const a=[0,0],b=[0,0];['inside','outside'].forEach((id,j)=>$(id).querySelectorAll('input').forEach((i,n)=>i.value=(j?b:a)[n]));calcOT();saveOTData(false);$('otMsg').textContent='Đã khôi phục giờ mẫu và tự lưu ✓'};
 function loadOT(){try{const x=JSON.parse(localStorage.getItem('muc3OT_'+year.value+'_'+String(month.value).padStart(2,'0'))||'null');if(x){if(x.rate!==undefined)$('hourRate').value=x.rate;['inside','outside'].forEach(id=>{const arr=x[id]||[];$(id).querySelectorAll('input').forEach((i,n)=>{if(arr[n]!==undefined)i.value=arr[n]})})}}catch(e){}calcOT()}
-document.querySelectorAll('.collapse-btn').forEach(btn=>{btn.addEventListener('click',()=>{const box=$(btn.dataset.target);const hide=box.style.display!=='none';box.style.display=hide?'none':'';btn.textContent=hide?'Hiện ▼':'Ẩn ▲';btn.setAttribute('aria-expanded',String(!hide));});});
+
+const collapseKey = 'chamCongCollapsedSections_v1';
+
+function loadCollapseStates() {
+  let states = {};
+
+  try {
+    states = JSON.parse(
+      localStorage.getItem(collapseKey) || '{}'
+    ) || {};
+  } catch (e) {
+    states = {};
+  }
+
+  document.querySelectorAll('.collapse-btn').forEach(btn => {
+    const box = document.getElementById(btn.dataset.target);
+    if (!box) return;
+
+    const isHidden = states[btn.dataset.target] === true;
+
+    box.style.display = isHidden ? 'none' : '';
+    btn.textContent = isHidden ? 'Hiện ▼' : 'Ẩn ▲';
+    btn.setAttribute('aria-expanded', String(!isHidden));
+  });
+}
+
+document.querySelectorAll('.collapse-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const box = document.getElementById(btn.dataset.target);
+    if (!box) return;
+
+    const isHidden = box.style.display !== 'none';
+
+    box.style.display = isHidden ? 'none' : '';
+    btn.textContent = isHidden ? 'Hiện ▼' : 'Ẩn ▲';
+    btn.setAttribute('aria-expanded', String(!isHidden));
+
+    try {
+      const states = JSON.parse(
+        localStorage.getItem(collapseKey) || '{}'
+      ) || {};
+
+      states[btn.dataset.target] = isHidden;
+      localStorage.setItem(collapseKey, JSON.stringify(states));
+    } catch (e) {
+      alert('Không lưu được trạng thái ẩn. Hãy kiểm tra chế độ trình duyệt.');
+    }
+  });
+});
+
+loadCollapseStates();
+btn.addEventListener('click',()=>{const box=$(btn.dataset.target);const hide=box.style.display!=='none';box.style.display=hide?'none':'';btn.textContent=hide?'Hiện ▼':'Ẩn ▲';btn.setAttribute('aria-expanded',String(!hide));});});
 loadSalary();buildAttendance();loadOT();
 window.addEventListener('pagehide',()=>{saveSalary(false);saveAttendance();saveOTData(false)});
 })();
