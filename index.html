@@ -97,4 +97,20 @@ function loadOT(){try{const x=JSON.parse(localStorage.getItem('muc3OT_'+year.val
 document.querySelectorAll('.collapse-btn').forEach(btn=>{btn.addEventListener('click',()=>{const box=$(btn.dataset.target);const hide=box.style.display!=='none';box.style.display=hide?'none':'';btn.textContent=hide?'Hiện ▼':'Ẩn ▲';btn.setAttribute('aria-expanded',String(!hide));});});
 loadSalary();buildAttendance();loadOT();
 })();
-</script></body></html>
+</script>
+ 
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(function () {
+        console.log("Ứng dụng chấm công đã đăng ký offline.");
+      })
+      .catch(function (error) {
+        console.error("Lỗi đăng ký offline:", error);
+      });
+  });
+}
+</script>
+</body>
+</html>
